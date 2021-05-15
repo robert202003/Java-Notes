@@ -9,6 +9,12 @@
 
 ## 3.Java中sleep和wait的区别（难度星数：★）
 
+- sleep方法是Thread类的静态方法，wait方法是Object类的成员方法。  
+- sleep方法不会释放lock，但是wait会释放lock，而且会加入等待队列中  
+- sleep方法不依赖于同步器synchronized，但是wait需要依赖synchronized关键字  
+- sleep方法有可能会抛出异常，所以需要进行异常处理；wait方法不需要处理  
+- sleep方法可以在任何地方使用；wait方法只能在同步方法和同步代码块中使用  
+
 ## 4.synchronized实现原理（难度星数：★★★★）
 
 **1. 作用**  

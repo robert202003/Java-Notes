@@ -7,7 +7,7 @@
 
 ## Java中高级面试题
 
-- [500题和答案](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
+- [200题和答案](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
 
 ## java基础
 
@@ -17,27 +17,20 @@
 
 ## 多线程编程
 
-- [Java 并发](https://github.com/robert202003/Java-Notes/blob/master/notes/Java%20并发.md)
+- [Java多线程](https://github.com/robert202003/Java-Notes/blob/master/notes/Java%20并发.md)
 
 ## jvm虚拟机
 
-- [JVM详解](https://github.com/robert202003/Java-Notes/blob/master/notes/Java%20基础.md)
+- [JVM虚拟机详解](https://github.com/robert202003/Java-Notes/blob/master/notes/Java%20基础.md)
 
 ## 数据库
 
 - [数据库系统原理](https://github.com/robert202003/Java-Notes/blob/master/notes/数据库系统原理.md)
 - [SQL 语法](https://github.com/robert202003/Java-Notes/blob/master/notes/SQL%20语法.md)
-- [SQL 练习](https://github.com/robert202003/Java-Notes/blob/master/notes/SQL%20练习.md)
 - [MySQL](https://github.com/robert202003/Java-Notes/blob/master/notes/MySQL.md)
 
 ## redis缓存
 - [Redis](https://github.com/robert202003/Java-Notes/blob/master/notes/Redis.md)
-
-## Spring框架
-- [spring](https://github.com/robert202003/Java-Notes/blob/master/notes/Redis.md)
-
-## Mybatis框架
-- [mybatis](https://github.com/robert202003/Java-Notes/blob/master/notes/Redis.md)
 
 
 

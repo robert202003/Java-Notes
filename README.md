@@ -12,7 +12,7 @@
 - [JVM虚拟机题](https://github.com/robert202003/Java-Notes/blob/master/exam/jvm.md)
 - [redis题](https://github.com/robert202003/Java-Notes/blob/master/exam/redis.md)
 - [数据库题](https://github.com/robert202003/Java-Notes/blob/master/exam/database.md)
-- [15道Spring题](https://github.com/robert202003/Java-Notes/blob/master/exam/spring.md)
+- [18道Spring题](https://github.com/robert202003/Java-Notes/blob/master/exam/spring.md)
 - [编程实战题](https://github.com/robert202003/Java-Notes/blob/master/exam/pratice.md)
 
 ## java基础

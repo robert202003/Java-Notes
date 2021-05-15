@@ -7,7 +7,10 @@
 
 ## Java中高级面试题
 
-- [200题和答案](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
+- [java基础题](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
+- [java多线程题](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
+- [JVM虚拟机题](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
+- [常见的Spring15道题](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
 
 ## java基础
 

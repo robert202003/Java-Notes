@@ -5,7 +5,7 @@
 
 <!--<span id="busuanzi_container_site_pv">Site View : <span id="busuanzi_value_site_pv">-->
 
-[![stars](https://badgen.net/github/stars/CyC2018/CS-Notes?icon=github&color=4ab8a1)](https://github.com/CyC2018/CS-Notes) [![forks](https://badgen.net/github/forks/CyC2018/CS-Notes?icon=github&color=4ab8a1)](https://github.com/CyC2018/CS-Notes)
+[![stars](https://badgen.net/github/stars/robert202003/Java-Notes?icon=github&color=4ab8a1)](https://github.com/robert202003/Java-Notes) [![forks](https://badgen.net/github/forks/robert202003/Java-Notes?icon=github&color=4ab8a1)](https://github.com/robert202003/Java-Notes)
 
 [开始阅读](http://www.cyc2018.xyz)
 

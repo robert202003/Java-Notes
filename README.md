@@ -5,7 +5,7 @@
 
 <br>
 
-## 中高级1000道面试题和答案
+## 中高级1000题和答案
 
 - [1000道题](https://github.com/robert202003/Java-Notes/blob/master/notes/Java%20基础.md)
 

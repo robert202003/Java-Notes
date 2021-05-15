@@ -50,9 +50,7 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 
 ## 5.Spring的生命周期（难度星数：★★★★）
 
-- Bean 容器找到配置文件中 Spring Bean 的定义。
-
-- Bean 容器利用 Java Reflection API 创建一个Bean的实例。
+- Bean 容器找到配置文件中 Spring Bean 的定义，Bean 容器利用 Java Reflection API 创建一个Bean的实例。
 
 - 如果涉及到一些属性值 利用 set()方法设置一些属性值。
 
@@ -172,3 +170,21 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 在Bean对象中尽量避免定义可变的成员变量（不太现实）。
 
 在类中定义一个ThreadLocal成员变量，将需要的可变成员变量保存在 ThreadLocal 中（推荐的一种方式）。
+
+## 16.spring 框架中都用到了哪些设计模式？
+（1）工厂模式：BeanFactory就是简单工厂模式的体现，用来创建对象的实例；
+（2）单例模式：Bean默认为单例模式。
+（3）代理模式：Spring的AOP功能用到了JDK的动态代理和CGLIB字节码生成技术；
+（4）模板方法：用来解决代码重复的问题。比如. RestTemplate, JmsTemplate, JpaTemplate。
+（5）观察者模式：定义对象键一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都会得到通知被制动更新，如Spring中listener的实现--ApplicationListener。
+
+## 17.@Transactional什么时候会失效
+1）service类标签(一般不建议在接口上)上添加@Transactional，可以将整个类纳入spring事务管理，在每个业务方法执行时都会开启一个事务，不过这些事务采用相同的管理方式。
+2）@Transactional注解只能应用到public可见度的方法上。如果应用在protected、private或者package可见度的方法上，也不会报错，不过事务设置不会起作用。
+3）默认情况下，Spirng会对unchecked异常进行事务回滚；如果是checked异常则不回滚。
+4）只读事务： @Transactional(propagation=Propagation.NOT_SUPPORTED,readOnly=true) 
+只读标志只在事务启动时应用，否则即使配置也会被忽略。
+
+## 18.@Autowired和@Resource之间的区别
+(1) @Autowired默认是按照类型装配注入的，默认情况下它要求依赖对象必须存在（可以设置它required属性为false）。
+(2) @Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入。

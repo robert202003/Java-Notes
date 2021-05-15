@@ -101,7 +101,16 @@ synchronized是和if、else、for、while一样的关键字，ReentrantLock是�
 待补充......
 
 ## 18.如何实现接口的幂等性（难度星数：★★★）
-
+1）乐观锁
+这种方法适合在更新的场景中，update t_goods set count = count -1 , version = version + 1 where good_id=2 and version = 1
+根据version版本，也就是在操作库存前先获取当前商品的version版本号，然后操作的时候带上此version号。我们梳理下，我们第一次操作库存时，得到version为1，调用库存服务version变成了2；但返回给订单服务出现了问题，订单服务又一次发起调用库存服务，当订单服务传如的version还是1，再执行上面的sql语句时，就不会执行；因为version已经变为2了，where条件就不成立。这样就保证了不管调用几次，只会真正的处理一次。
+乐观锁主要使用于处理读多写少的问题这种方法适合在更新的场景中，update t_goods set count = count -1 , version = version + 1 where good_id=2 and version = 1
+根据version版本，也就是在操作库存前先获取当前商品的version版本号，然后操作的时候带上此version号。我们梳理下，我们第一次操作库存时，得到version为1，调用库存服务version变成了2；但返回给订单服务出现了问题，订单服务又一次发起调用库存服务，当订单服务传如的version还是1，再执行上面的sql语句时，就不会执行；因为version已经变为2了，where条件就不成立。这样就保证了不管调用几次，只会真正的处理一次。
+乐观锁主要使用于处理读多写少的问题
+2）唯一主键
+这个机制是利用了数据库的主键唯一约束的特性，解决了在insert场景时幂等问题。但主键的要求不是自增的主键，这样就需要业务生成全局唯一的主键。
+3）分布式锁
+……
 ## 19.AQS底层原理（难度星数：★★★★★）
 
 ## 20.理解CAS（难度星数：★★★）
@@ -114,7 +123,6 @@ CountDownLatch是使用AQS实现的，使用AQS的状态变量来存放计数器
 当计数器值变为0时，当前线程还要调用AQS的doReleaseShared方法来激活由于调用await()方法而被阻塞的线程。
 
 **2. 使用**
-
 
 ## 22.CyclicBarrier原理和使用（难度星数：★★★★）
 

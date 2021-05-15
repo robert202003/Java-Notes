@@ -7,10 +7,13 @@
 
 ## Java中高级面试题
 
-- [java基础题](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
-- [java多线程题](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
-- [JVM虚拟机题](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
-- [常见的Spring15道题](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
+- [java基础题](https://github.com/robert202003/Java-Notes/blob/master/exam/java.md)
+- [java多线程题](https://github.com/robert202003/Java-Notes/blob/master/exam/thread.md)
+- [JVM虚拟机题](https://github.com/robert202003/Java-Notes/blob/master/exam/jvm.md)
+- [redis题](https://github.com/robert202003/Java-Notes/blob/master/exam/redis.md)
+- [数据库题](https://github.com/robert202003/Java-Notes/blob/master/exam/database.md)
+- [常见的15道Spring题](https://github.com/robert202003/Java-Notes/blob/master/exam/spring.md)
+- [编程实战题](https://github.com/robert202003/Java-Notes/blob/master/exam/pratice.md)
 
 ## java基础
 

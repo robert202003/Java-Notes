@@ -5,9 +5,9 @@
 
 <br>
 
-## 中高级1000题和答案
+## Java中高级面试题
 
-- [1000道题](https://github.com/robert202003/Java-Notes/blob/master/notes/Java%20基础.md)
+- [1000题和答案](https://github.com/robert202003/Java-Notes/blob/master/notes/Java%20基础.md)
 
 ## java基础
 

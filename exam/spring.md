@@ -118,6 +118,20 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 
 - TransactionDefinition.PROPAGATION_NESTED： 如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；如果当前没有事务，则该取值等价于TransactionDefinition.PROPAGATION_REQUIRED。
 
+也可以这样记忆：
+
+spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记忆  
+1).REQUIRE组  
+      1.REQUIRED:当前存在事务则使用当前的事务, 当前不存在事务则创建一个新的事务  
+      2.REQUIRES_NEW:创建新事务, 如果已经存在事务, 则把已存在的事务挂起  
+2).SUPPORT组  
+      1.SUPPORTS:支持事务. 如果当前存在事务则加入该事务, 如果不存在事务则以无事务状态执行
+      2.NOT_SUPPORTED:不支持事务. 在无事务状态下执行,如果已经存在事务则挂起已存在的事务
+3).Exception组  
+      1.MANDATORY:必须在事务中执行, 如果当前不存在事务, 则抛出异常  
+      2.NEVER: 不可在事务中执行, 如果当前存在事务, 则抛出异常  
+4).NESTED:嵌套事务. 如果当前存在事务, 则嵌套执行, 如果当前不存在事务, 则开启新事务。
+
 ## 8.Spring 事务中的隔离级别有哪几种?
 - TransactionDefinition 接口中定义了五个表示隔离级别的常量：
 

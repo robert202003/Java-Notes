@@ -1,6 +1,15 @@
-## 1.进程和线程的区别（难度星数：★★★）
+## 1.进程和线程的区别（难度星数：★★）
+- 进程是代码在数据集合上的一次运行活动，是系统进行资源分配和调度的基本单元。
+- 线程则是进程的执行路径，一个进程至少有一个线程，线程是CPU分配的基本单元。
 
-## 2.synchronized实现原理（难度星数：★★★★）
+## 2.线程的创建方式（难度星数：★）
+- 继承Thread类
+- 实现runnable接口
+- 实现callable接口，有返回值
+
+## 3.Java中sleep和wait的区别（难度星数：★）
+
+## 4.synchronized实现原理（难度星数：★★★★）
 
 **1. 作用**  
 原子性：确保线程互斥的访问同步代码；
@@ -23,7 +32,7 @@ monitorexit：执行monitorexit的线程必须是objectref所对应的monitor的
 **4. 锁升级过程** 
 待补充......
 
-## 3.volatile理解难度星数：（难度星数：★★★）
+## 5.volatile理解难度星数：（难度星数：★★★）
 1）保证内存可见性
 
 通俗来说就是，线程A对一个volatile变量的修改，对于其它线程来说是可见的，即线程每次获取volatile变量的值都是最新的。
@@ -36,7 +45,7 @@ JMM是允许编译器和处理器对指令重排序的，但是规定了as-if-se
 
 说明：volatile并不能保证原子性
 
-## 4.synchronized和volatile的区别？（难度星数：★★★）
+## 6.synchronized和volatile的区别？（难度星数：★★★）
 一旦一个共享变量（类的成员变量、类的静态成员变量）被volatile修饰之后，那么就具备了两层语义：   
 1.保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的。  
 2.禁止进行指令重排序。    
@@ -48,48 +57,50 @@ JMM是允许编译器和处理器对指令重排序的，但是规定了as-if-se
 - volatile不会造成线程的阻塞；synchronized可能会造成线程的阻塞。  
 - volatile标记的变量不会被编译器优化；synchronized标记的变量可以被编译器优化。  
 
-## 5.java对象头包含哪些内容（难度星数：★★★）
+## 7.java对象头包含哪些内容（难度星数：★★★）
 待补充......
 
-## 6.ReentrantLock实现原理（难度星数：★★★★）
+## 8.ReentrantLock实现原理（难度星数：★★★★）
 待补充......
 
-## 7.ReentrantReadWriteLock原理（难度星数：★★★★）
+## 9.ReentrantReadWriteLock原理（难度星数：★★★★）
 
-## 12.synchronized和ReentrantLock的区别（难度星数：★★★）
+## 10.synchronized和ReentrantLock的区别（难度星数：★★★）
 synchronized是和if、else、for、while一样的关键字，ReentrantLock是类，这是二者的本质区别。既然ReentrantLock是类，那么它就提供了比synchronized更多更灵活的特性，可以被继承、可以有方法、可以有各种各样的类变量，ReentrantLock比synchronized的扩展性体现在几点上： 
 - ReentrantLock可以对获取锁的等待时间进行设置，这样就避免了死锁 
 - ReentrantLock可以获取各种锁的信息 
 - ReentrantLock可以灵活地实现多路通知 
 - 另外，二者的锁机制其实也是不一样的:ReentrantLock底层调用的是Unsafe的park方法加锁，synchronized操作的应该是对象头中mark word.
 
-## 13.ThreadLocal实现原理和内存泄露（难度星数：★★★）
+## 11.ThreadLocal实现原理和内存泄露（难度星数：★★★）
 待补充......
 
-## 14.ThreadLocalRandom原理（难度星数：★★★）
+## 12.ThreadLocalRandom原理（难度星数：★★★）
 待补充......
 
-## 2.乐观锁和悲观锁区别（难度星数：★★）
+## 13.乐观锁和悲观锁区别（难度星数：★★）
 - 乐观锁：乐观锁认为竞争不总是会发生，因此它不需要持有锁，将比较-替换这两个动作作为一个原子操作尝试去修改内存中的变量，如果失败则表示发生冲突，那么就应该有相应的重试逻辑。
 - 悲观锁：悲观锁认为竞争总是会发生，因此每次对某资源进行操作时，都会持有一个独占的锁，就像synchronized，不管三七二十一，直接上了锁就操作资源了。
 
-## 3.什么是可重入锁？（难度星数：★★★）
+## 14.什么是可重入锁？（难度星数：★★★）
 待补充......
 
-## 4.什么是自旋锁？（难度星数：★★★）
+## 15.什么是自旋锁？（难度星数：★★★）
 待补充......
 
-## 5.公平锁和非公平锁的区别（难度星数：★★★）
+## 16.公平锁和非公平锁的区别（难度星数：★★★）
 待补充......
 
-## 6.独占锁和共享锁的区别（难度星数：★★★）
+## 17.独占锁和共享锁的区别（难度星数：★★★）
 待补充......
 
-## 7.如何实现接口的幂等性（难度星数：★★★）
+## 18.如何实现接口的幂等性（难度星数：★★★）
 
-## 8.AQS底层原理（难度星数：★★★★★）
+## 19.AQS底层原理（难度星数：★★★★★）
 
-## 9.CountDownLatch原理和使用（难度星数：★★★★）
+## 20.理解CAS（难度星数：★★★）
+
+## 21.CountDownLatch原理和使用（难度星数：★★★★）
 
 **1. 原理**  
 CountDownLatch是使用AQS实现的，使用AQS的状态变量来存放计数器的值。首先在初始化CountDownLatch时设置状态值（计算器值），当多个线程调用countdown
@@ -99,26 +110,26 @@ CountDownLatch是使用AQS实现的，使用AQS的状态变量来存放计数器
 **2. 使用**
 
 
-## 10.CyclicBarrier原理和使用（难度星数：★★★★）
+## 22.CyclicBarrier原理和使用（难度星数：★★★★）
 
-## 11.Semaphore原理和使用（难度星数：★★★★）
+## 23.Semaphore原理和使用（难度星数：★★★★）
 
-## 12.ThreadPoolExecutor线程池核心参数和原理（难度星数：★★★）
+## 24.ThreadPoolExecutor线程池核心参数和原理（难度星数：★★★）
 
-## 13.CompletableFuture使用
+## 25.CompletableFuture使用
 
-## 14.ConcurrentLinkedQueue原理（难度星数：★★★★）
+## 26.ConcurrentLinkedQueue原理（难度星数：★★★★）
 
-## 15.LinkedBlockingQueue原理（难度星数：★★★★）
+## 27.LinkedBlockingQueue原理（难度星数：★★★★）
 
-## 16.ArrayBlockingQueue原理（难度星数：★★★★）
+## 28.ArrayBlockingQueue原理（难度星数：★★★★）
 
-## 17.PriorityBlockingQueue原理（难度星数：★★★★）
+## 29.PriorityBlockingQueue原理（难度星数：★★★★）
 
-## 18.DelayQueue原理（难度星数：★★★★）
+## 30.DelayQueue原理（难度星数：★★★★）
 
-## 19.SynchronousQueue（难度星数：★★★★）
+## 31.SynchronousQueue（难度星数：★★★★）
 
-## 20.LinkedTransferQueue（难度星数：★★★★）
+## 32.LinkedTransferQueue（难度星数：★★★★）
 
-## 21.LinkedBlockingDeque（难度星数：★★★★）
+## 33.LinkedBlockingDeque（难度星数：★★★★）

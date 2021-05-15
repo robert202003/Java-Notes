@@ -77,21 +77,27 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 - 当要销毁 Bean 的时候，如果 Bean 在配置文件中的定义包含 destroy-method 属性，执行指定的方法。
 
 ## 6.Spring MVC原理
-- 客户端（浏览器）发送请求，直接请求到 DispatcherServlet。
+1.用户发起请求到前端控制器dispatcherServlet，  
 
-- DispatcherServlet 根据请求信息调用 HandlerMapping，解析请求对应的 Handler。
+2.前端控制器请求处理器映射器handlerMapping来查找相应handler（可以根据xml配置或注解配置查找），
 
-- 解析到对应的 Handler（也就是我们平常说的 Controller 控制器）后，开始由 HandlerAdapter 适配器处理。
+3.处理器映射器handlerMapping返回给前端控制器handler，
 
-- HandlerAdapter 会根据 Handler来调用真正的处理器开处理请求，并处理相应的业务逻辑。
+4.前端控制器调用处理器适配器handlerAdapter去执行handler
 
-- 处理器处理完业务后，会返回一个 ModelAndView 对象，Model 是返回的数据对象，View 是个逻辑上的 View。
+5.处理器适配器handlerAdapter执行handler
 
-- ViewResolver 会根据逻辑 View 查找实际的 View。
+6.handler执行完成给处理器适配器返回ModelAndView
 
-- DispaterServlet 把返回的 Model 传给 View（视图渲染）。
+7.处理器适配器handlerAdapter向前端控制器返回ModelAndView(springMVC的一个底层对象，包括model和view)
 
-- 把 View 返回给请求者（浏览器）
+8.前端控制器请求视图解析器进行视图解析
+
+9.视图解析器向前端控制器返回view 
+
+10.前端控制器进行视图渲染
+
+11.前端控制器向用户响应结果。
 
 ## 7.Spring的事务传播机制（难度星数：★★★）
 支持当前事务的情况：

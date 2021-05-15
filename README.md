@@ -1,6 +1,6 @@
 # Java面试宝典
 
-| 1000道题| java基础| &nbsp;多线程&nbsp; | jvm虚拟机| &nbsp;数据库&nbsp; | &nbsp;redis缓存&nbsp; |&nbsp;Spring框架&nbsp;| &nbsp;Mybatis &nbsp;| 
+| 300道面试题| java基础| &nbsp;多线程&nbsp; | jvm虚拟机| &nbsp;数据库&nbsp; | &nbsp;redis缓存&nbsp; |&nbsp;Spring框架&nbsp;| &nbsp;Mybatis &nbsp;| 
 | :------: | :------: | :------: | :------: | :------: | :------: | :------: | :------: | 
 
 <br>
@@ -8,11 +8,11 @@
 ## Java中高级面试题
 
 - [java基础题](https://github.com/robert202003/Java-Notes/blob/master/exam/java.md)
-- [java多线程题](https://github.com/robert202003/Java-Notes/blob/master/exam/thread.md)
+- [java多线程33题](https://github.com/robert202003/Java-Notes/blob/master/exam/thread.md)
 - [JVM虚拟机题](https://github.com/robert202003/Java-Notes/blob/master/exam/jvm.md)
 - [redis题](https://github.com/robert202003/Java-Notes/blob/master/exam/redis.md)
 - [数据库题](https://github.com/robert202003/Java-Notes/blob/master/exam/database.md)
-- [常见的15道Spring题](https://github.com/robert202003/Java-Notes/blob/master/exam/spring.md)
+- [15道Spring题](https://github.com/robert202003/Java-Notes/blob/master/exam/spring.md)
 - [编程实战题](https://github.com/robert202003/Java-Notes/blob/master/exam/pratice.md)
 
 ## java基础

@@ -7,7 +7,7 @@
 
 ## Java中高级面试题
 
-- [1000题和答案](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
+- [500题和答案](https://github.com/robert202003/Java-Notes/blob/master/notes/1000题和答案.md)
 
 ## java基础
 

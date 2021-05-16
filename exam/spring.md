@@ -13,9 +13,9 @@ AOP(Aspect-Oriented Programming:面向切面编程)能够将那些与业务无�
 
 Spring AOP就是基于动态代理的，如果要代理的对象，实现了某个接口，那么Spring AOP会使用JDK Proxy，去创建代理对象，而对于没有实现接口的对象，就无法使用 JDK Proxy 去进行代理了，这时候Spring AOP会使用Cglib ，这时候Spring AOP会使用 Cglib 生成一个被代理对象的子类来作为代理
 
-## 2.BeanFactory和ApplicationContext的区别（难度星数：★★★）
+## 2.BeanFactory和ApplicationContext的区别（难度：★★★）
 
-## 3.Spring的bean作用范围有哪些（难度星数：★★）
+## 3.Spring的bean作用范围有哪些（难度：★★）
 
 **singleton （默认值）**  
 将每个Spring IoC容器的单个bean定义范围限定为单个对象实例。
@@ -48,7 +48,7 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 如果我们的切面比较少，那么两者性能差异不大。但是，当切面太多的话，最好选择 AspectJ ，它比Spring AOP 快很多。
 
 
-## 5.Spring的生命周期（难度星数：★★★★）
+## 5.Spring的生命周期（难度：★★★★）
 
 - Bean 容器找到配置文件中 Spring Bean 的定义，Bean 容器利用 Java Reflection API 创建一个Bean的实例。
 
@@ -97,7 +97,7 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 
 11.前端控制器向用户响应结果。
 
-## 7.Spring的事务传播机制（难度星数：★★★）
+## 7.Spring的事务传播机制（难度：★★★）
 支持当前事务的情况：
 
 - TransactionDefinition.PROPAGATION_REQUIRED： 如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。
@@ -145,11 +145,11 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
 
 - TransactionDefinition.ISOLATION_SERIALIZABLE: 最高的隔离级别，完全服从ACID的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。但是这将严重影响程序的性能。通常情况下也不会用到该级别。
 
-## 9.Spring的注入方式有哪些？（难度星数：★★）
+## 9.Spring的注入方式有哪些？（难度：★★）
 
-## 10.Spring的加载方式有哪些？（难度星数：★★）
+## 10.Spring的加载方式有哪些？（难度：★★）
 
-## 11.Spring的循环依赖问题，什么时候报异常（难度星数：★★★★）
+## 11.Spring的循环依赖问题，什么时候报异常（难度：★★★★）
 
 ## 12.Spring 管理事务的方式有几种？
 编程式事务，在代码中硬编码。(不推荐使用)

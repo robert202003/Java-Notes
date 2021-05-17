@@ -8,7 +8,7 @@
 ## Java中高级面试题
 
 - [java基础](https://github.com/robert202003/Java-Notes/blob/master/docs/java.md)
-- [java多线程](https://github.com/robert202003/Java-Notes/blob/master/docs/multithread.md.md)
+- [java多线程](https://github.com/robert202003/Java-Notes/blob/master/docs/multithread.md)
 - [JVM虚拟机](https://github.com/robert202003/Java-Notes/blob/master/docs/jvm.md)
 - [redis](https://github.com/robert202003/Java-Notes/blob/master/docs/redis.md)
 - [数据库](https://github.com/robert202003/Java-Notes/blob/master/docs/database.md)

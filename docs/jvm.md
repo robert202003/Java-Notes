@@ -21,9 +21,11 @@
 3、 如果 BootStrapClassLoader 加载失败，会使用 ExtClassLoader 来尝试加载；
 
 4、 若 ExtClassLoader 也加载失败，则会使用 AppClassLoader 来加载，如果 AppClassLoader 也加载失败，则会报出异常 ClassNotFoundException。
+
 ## 类加载器有哪些？（难度：★★★）
 
 ## 如何查看 JVM 当前使用的是什么垃圾收集器？
+
 -XX:+PrintCommandLineFlags 参数可以打印出所选垃圾收集器和堆空间大小等设置
 
 如果开启了 GC 日志详细信息，里面也会包含各代使用的垃圾收集器的简称

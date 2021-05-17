@@ -1,6 +1,7 @@
 # Spring面试题
 
 ## 1.谈谈自己对于 Spring IoC 和 AOP 的理解
+
 **IoC**
 IoC（Inverse of Control:控制反转）是一种设计思想，就是 将原本在程序中手动创建对象的控制权，交由Spring框架来管理。 IoC 在其他语言中也有应用，并非 Spirng 特有。 IoC 容器是 Spring 用来实现 IoC 的载体， IoC 容器实际上就是个Map（key，value）,Map 中存放的是各种对象。
 
@@ -41,12 +42,12 @@ Spring AOP就是基于动态代理的，如果要代理的对象，实现了某�
 将单个bean定义的作用域限定为的生命周期WebSocket。仅在可感知网络的Spring上下文中有效ApplicationContext。
 
 ## 4.Spring AOP 和 AspectJ AOP 有什么区别？
+
 Spring AOP 属于运行时增强，而 AspectJ 是编译时增强。 Spring AOP 基于代理(Proxying)，而 AspectJ 基于字节码操作(Bytecode Manipulation)。
 
 Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系统中最完整的 AOP 框架了。AspectJ 相比于 Spring AOP 功能更加强大，但是 Spring AOP 相对来说更简单，
 
 如果我们的切面比较少，那么两者性能差异不大。但是，当切面太多的话，最好选择 AspectJ ，它比Spring AOP 快很多。
-
 
 ## 5.Spring的生命周期（难度：★★★★）
 
@@ -74,7 +75,8 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 
 - 当要销毁 Bean 的时候，如果 Bean 在配置文件中的定义包含 destroy-method 属性，执行指定的方法。
 
-## 6.Spring MVC原理
+## Spring MVC原理
+
 1.用户发起请求到前端控制器dispatcherServlet，  
 
 2.前端控制器请求处理器映射器handlerMapping来查找相应handler（可以根据xml配置或注解配置查找），
@@ -97,7 +99,7 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 
 11.前端控制器向用户响应结果。
 
-## 7.Spring的事务传播机制（难度：★★★）
+## Spring的事务传播机制（难度：★★★）
 支持当前事务的情况：
 
 - TransactionDefinition.PROPAGATION_REQUIRED： 如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。
@@ -132,7 +134,8 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
       2.NEVER: 不可在事务中执行, 如果当前存在事务, 则抛出异常  
 4).NESTED:嵌套事务. 如果当前存在事务, 则嵌套执行, 如果当前不存在事务, 则开启新事务。
 
-## 8.Spring 事务中的隔离级别有哪几种?
+## Spring 事务中的隔离级别有哪几种?
+
 - TransactionDefinition 接口中定义了五个表示隔离级别的常量：
 
 - TransactionDefinition.ISOLATION_DEFAULT: 使用后端数据库默认的隔离级别，Mysql 默认采用的 REPEATABLE_READ隔离级别 Oracle 默认采用的 READ_COMMITTED隔离级别.
@@ -152,6 +155,7 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
 ## 11.Spring的循环依赖问题，什么时候报异常（难度：★★★★）
 
 ## 12.Spring 管理事务的方式有几种？
+
 编程式事务，在代码中硬编码。(不推荐使用)
 
 声明式事务，在配置文件中配置（推荐使用）
@@ -160,7 +164,7 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
 
 基于XML的声明式事务和基于注解的声明式事务
 
-## 13.过滤器（filter）和拦截器（Interceptor）的区别
+## 过滤器（filter）和拦截器（Interceptor）的区别
 
 1.拦截器是基于java的反射机制的，而过滤器是基于函数回调。  
 2.拦截器不依赖与servlet容器，过滤器依赖与servlet容器。  
@@ -170,14 +174,16 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
 6.拦截器可以获取IOC容器中的各个bean，而过滤器就不行，这点很重要，在拦截器里注入一个service，可以调用业务逻辑。  
 总结：过滤器包裹住servlet，servlet包裹住拦截器。
 
-## 14.@Component 和 @Bean 的区别是什么？
+## @Component 和 @Bean 的区别是什么？
+
 作用对象不同: @Component 注解作用于类，而@Bean注解作用于方法。
 
 @Component通常是通过类路径扫描来自动侦测以及自动装配到Spring容器中（我们可以使用 @ComponentScan 注解定义要扫描的路径从中找出标识了需要装配的类自动装配到 Spring 的 bean 容器中）。@Bean 注解通常是我们在标有该注解的方法中定义产生这个 bean,@Bean告诉了Spring这是某个类的示例，当我需要用它的时候还给我。
 
 @Bean 注解比 Component 注解的自定义性更强，而且很多地方我们只能通过 @Bean 注解来注册bean。比如当我们引用第三方库中的类需要装配到 Spring容器时，则只能通过 @Bean来实现。
 
-## 15.Spring框架中的单例bean是线程安全的吗？如果不安全如何解决
+## Spring框架中的单例bean是线程安全的吗？如果不安全如何解决
+
 不是，Spring框架中的单例bean不是线程安全的。
 常见的有两种解决办法：
 
@@ -185,20 +191,25 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
 
 在类中定义一个ThreadLocal成员变量，将需要的可变成员变量保存在 ThreadLocal 中（推荐的一种方式）。
 
-## 16.spring 框架中都用到了哪些设计模式？
-（1）工厂模式：BeanFactory就是简单工厂模式的体现，用来创建对象的实例；
-（2）单例模式：Bean默认为单例模式。
-（3）代理模式：Spring的AOP功能用到了JDK的动态代理和CGLIB字节码生成技术；
-（4）模板方法：用来解决代码重复的问题。比如. RestTemplate, JmsTemplate, JpaTemplate。
+## spring 框架中都用到了哪些设计模式？
+
+（1）工厂模式：BeanFactory就是简单工厂模式的体现，用来创建对象的实例。  
+（2）单例模式：Bean默认为单例模式。  
+（3）代理模式：Spring的AOP功能用到了JDK的动态代理和CGLIB字节码生成技术。  
+（4）模板方法：用来解决代码重复的问题。比如. RestTemplate, JmsTemplate, JpaTemplate。  
 （5）观察者模式：定义对象键一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都会得到通知被制动更新，如Spring中listener的实现--ApplicationListener。
 
 ## 17.@Transactional什么时候会失效
+
 1）service类标签(一般不建议在接口上)上添加@Transactional，可以将整个类纳入spring事务管理，在每个业务方法执行时都会开启一个事务，不过这些事务采用相同的管理方式。
+
 2）@Transactional注解只能应用到public可见度的方法上。如果应用在protected、private或者package可见度的方法上，也不会报错，不过事务设置不会起作用。
+
 3）默认情况下，Spirng会对unchecked异常进行事务回滚；如果是checked异常则不回滚。
-4）只读事务： @Transactional(propagation=Propagation.NOT_SUPPORTED,readOnly=true) 
-只读标志只在事务启动时应用，否则即使配置也会被忽略。
+
+4）只读事务： @Transactional(propagation=Propagation.NOT_SUPPORTED,readOnly=true) 只读标志只在事务启动时应用，否则即使配置也会被忽略。
 
 ## 18.@Autowired和@Resource之间的区别
-(1) @Autowired默认是按照类型装配注入的，默认情况下它要求依赖对象必须存在（可以设置它required属性为false）。
+
+(1) @Autowired默认是按照类型装配注入的，默认情况下它要求依赖对象必须存在（可以设置它required属性为false）。  
 (2) @Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入。

@@ -93,7 +93,7 @@ Comparable 总是只有一个，但是可以有多个 comparator 来定义对象
 1.ArithmeticException（算术异常）;  
 2.ClassCastException （类转换异常）;  
 3.IllegalArgumentException （非法参数异常）;  
-4.ndexOutOfBoundsException （下标越界异常）;  
+4.indexOutOfBoundsException （下标越界异常）;  
 5.NullPointerException （空指针异常）;  
 6.SecurityException （安全异常）  
 

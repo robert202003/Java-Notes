@@ -1,6 +1,7 @@
 # 一、java面试题
 
 ## final 关键字
+
 **final关键字主要用在三个地方：变量、方法、类。**
 
 1. **对于一个final变量，如果是基本数据类型的变量，则其数值一旦在初始化之后便不能更改；如果是引用类型的变量，则在对其初始化之后便不能再让其指向另一个对象。**
@@ -32,6 +33,7 @@ JAVA反射机制是在运行状态中，对于任意一个类，都能够知道�
 这种动态获取的信息以及动态调用对象的方法的功能称为java语言的反射机制。
 
 ## 反射中，Class.forName和classloader的区别（难度：★★）
+
 java中class.forName()和classLoader都可用来对类进行加载。  
 - class.forName()前者除了将类的.class文件加载到jvm中之外，还会对类进行解释，执行类中的static块。  
 - 而classLoader只干一件事情，就是将.class文件加载到jvm中，不会执行static中的内容,只有在newInstance才会去执行static块。    
@@ -54,10 +56,12 @@ java内部类分为： 成员内部类、静态嵌套类、方法内部类、匿
 子类和父类的静态代码块都执行完之后，在执行父类的非静态代码块和父类的构造方法,最后执行子类的非静态代码块和构造方法.
 
 ## Comparator和Comparable的区别?（难度：★）
+
 Comparable 接口用于定义对象的自然顺序，而 comparator 通常用于定义用户定制的顺序。
 Comparable 总是只有一个，但是可以有多个 comparator 来定义对象的顺序。
 
 ## Java的数据结构有哪些？（难度：★）
+
 - 线性表（ArrayList）  
 - 链表（LinkedList）  
 - 栈（Stack）  
@@ -153,9 +157,7 @@ HashMap操作的时间复杂度：
 
 ## ConcurrentHashMap实现原理（难度：★★★★）
 
-
 ## ArrayList实现原理、扩容机制（难度：★★★）
-
 
 ## LinkedList实现原理、扩容机制（难度：★★★）
 

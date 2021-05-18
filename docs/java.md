@@ -66,12 +66,14 @@ Comparable 总是只有一个，但是可以有多个 comparator 来定义对象
 - 树（Tree）  
 
 ## java 创建对象的几种方式（难度：★）
+
 1.采用new  
 2.通过反射  
 3.采用clone  
 4.通过序列化机制  
 
 ## java当中的四种引用（难度：★★）
+
 强引用，软引用，弱引用，虚引用。不同的引用类型主要体现在GC上:  
 
 1.强引用：如果一个对象具有强引用，它就不会被垃圾回收器回收。即使当前内存空间不足，JVM也不会回收它，而是抛出 OutOfMemoryError 错误，使程序异常终止。如果想中断强引用和某个对象之间的关联，可以显式地将引用赋值为null，这样一来的话，JVM在合适的时间就会回收该对象。
@@ -83,6 +85,7 @@ Comparable 总是只有一个，但是可以有多个 comparator 来定义对象
 4.虚引用：顾名思义，就是形同虚设，如果一个对象仅持有虚引用，那么它相当于没有引用，在任何时候都可能被垃圾回收器回收。
 
 ## 列出一些你常见的运行时异常？（难度：★）
+
 1.ArithmeticException（算术异常）;  
 2.ClassCastException （类转换异常）;  
 3.IllegalArgumentException （非法参数异常）;  
@@ -115,6 +118,7 @@ Comparable 总是只有一个，但是可以有多个 comparator 来定义对象
 
 HashMap实际上是一个“链表散列”的数据结构，即数组和链表的结合体。
 HashMap底层就是一个数组结构，数组中的每一项又是一个链表。当新建一个HashMap的时候，就会初始化一个数组。
+
 ```java
 /**
 * The table, resized as necessary. Length MUST Always be a power of two.
@@ -129,6 +133,7 @@ static class Node<K,V> implements Map.Entry<K,V> {
     ......
 }
 ```
+
 当我们往HashMap中put元素的时候，先根据key的hashCode重新计算hash值，根据hash值得到这个元素在数组中的位置（即下标）， 如果数组该位置上已经存放有其他元素了，那么在这个位置上的元素将以链表的形式存放，新加入的放在链头，最先加入的放在链尾。如果数组该位置上没有元素，就直接将该元素放到此数组中的该位置上。
 简单地说，HashMap 在底层将 key-value 当成一个整体进行处理，这个整体就是一个 Entry 对象。HashMap 底层采用一个 Entry[] 数组来保存所有的 key-value 对，当需要存储一个 Entry 对象时，会根据hash算法来决定其在数组中的存储位置，再根据equals方法决定其在该数组位置上的链表中的存储位置；当需要取出一个Entry时，
 也会根据hash算法找到其在数组中的存储位置，再根据equals方法从该位置上的链表中取出该Entry。
@@ -159,8 +164,7 @@ HashMap操作的时间复杂度：
 
 1.是否保证线程安全：ArrayList 和 LinkedList 都是不同步的，也就是不保证线程安全；     
  
-2.底层数据结构： Arraylist 底层使用的是 Object 数组；LinkedList 底层使用的是 双向链表 数据结构（JDK1.6 
-之前为循环链表，JDK1.7 取消了循环。注意双向链表和双向循环链表的区别，下面有介绍到！）    
+2.底层数据结构： Arraylist 底层使用的是 Object 数组；LinkedList 底层使用的是 双向链表 数据结构（JDK1.6 之前为循环链表，JDK1.7 取消了循环。注意双向链表和双向循环链表的区别，下面有介绍到！）    
 
 3.插入和删除是否受元素位置的影响： ① ArrayList 采用数组存储，所以插入和删除元素的时间复杂度受元素位置的影响。 比如：执行add(E e)方法的时候， 
 ArrayList 会默认在将指定的元素追加到此列表的末尾，这种情况时间复杂度就是 O(1)。但是如果要在指定位置 i 插入和删除元素的话（add(int index, E element)）

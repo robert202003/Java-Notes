@@ -2,7 +2,7 @@
 
 | &nbsp;Java&nbsp; | &nbsp;数据库&nbsp; | Spring框架| &nbsp;消息队列&nbsp; | &nbsp;编程实战&nbsp; | 
 | :------: | :------: | :------: | :------: | :------: | 
-| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:hotsprings:](#hotsprings-Spring框架) |[:hotsprings:](#rabbit-消息队列) |[:watermelon:](#watermelon-编程实战) |
+| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:hotsprings:](#hotsprings-Spring框架) |[:rabbit:](#rabbit-消息队列) |[:bear:](#watermelon-编程实战) |
 <br>
 
 ## :coffee: Java
@@ -24,7 +24,7 @@
 
 - [RabbitMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/rabbit.md)
 
-## :watermelon: 编程实战
+## :bear: 编程实战
 
 - [编程实战](https://github.com/robert202003/Java-Notes/blob/master/docs/pratice.md)
 

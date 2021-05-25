@@ -1,16 +1,14 @@
-# Java面试宝典
+# Java面试宝典(中高级面试题)
 
 | java基础| &nbsp;多线程&nbsp; | jvm虚拟机| &nbsp;数据库&nbsp; | &nbsp;redis缓存&nbsp; |&nbsp;Spring框架&nbsp;|  
 | :------: | :------: | :------: | :------: | :------: | :------: | 
 
 <br>
 
-# Java中高级面试题
-
 ## :coffee: Java
 
-- [java基础](https://github.com/robert202003/Java-Notes/blob/master/docs/java.md)
-- [java多线程](https://github.com/robert202003/Java-Notes/blob/master/docs/multithread.md)
+- [Java基础](https://github.com/robert202003/Java-Notes/blob/master/docs/java.md)
+- [Java多线程](https://github.com/robert202003/Java-Notes/blob/master/docs/multithread.md)
 - [JVM](https://github.com/robert202003/Java-Notes/blob/master/docs/jvm.md)
 
 ## :floppy_disk: 数据库

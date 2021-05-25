@@ -1,8 +1,8 @@
 # Java中高级面试宝典
 
-| java基础| &nbsp;多线程&nbsp; | jvm虚拟机| &nbsp;数据库&nbsp; | &nbsp;redis缓存&nbsp; |&nbsp;Spring框架&nbsp;|  
+| Java基础| &nbsp;多线程&nbsp; | Java虚拟机| &nbsp;数据库&nbsp; | &nbsp;Redis缓存&nbsp; |&nbsp;Spring框架&nbsp;|  
 | :------: | :------: | :------: | :------: | :------: | :------: | 
-
+| [:coffee:](#coffee-Java) |
 <br>
 
 ## :coffee: Java
@@ -18,8 +18,8 @@
 
 ## :hotsprings: Spring框架
 
-- [Spring](https://github.com/robert202003/Java-Notes/blob/master/docs/spring.md)
+- [Spring框架](https://github.com/robert202003/Java-Notes/blob/master/docs/spring.md)
 
-## 编程实战
+## :watermelon: 编程实战
 
 - [编程实战](https://github.com/robert202003/Java-Notes/blob/master/docs/pratice.md)

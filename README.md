@@ -1,4 +1,4 @@
-# Java面试宝典(中高级面试题)
+# Java中高级面试宝典
 
 | java基础| &nbsp;多线程&nbsp; | jvm虚拟机| &nbsp;数据库&nbsp; | &nbsp;redis缓存&nbsp; |&nbsp;Spring框架&nbsp;|  
 | :------: | :------: | :------: | :------: | :------: | :------: | 
@@ -7,16 +7,16 @@
 
 ## :coffee: Java
 
-- [Java基础](https://github.com/robert202003/Java-Notes/blob/master/docs/java.md)
-- [Java多线程](https://github.com/robert202003/Java-Notes/blob/master/docs/multithread.md)
-- [JVM](https://github.com/robert202003/Java-Notes/blob/master/docs/jvm.md)
+- [Java 基础](https://github.com/robert202003/Java-Notes/blob/master/docs/java.md)
+- [Java 多线程](https://github.com/robert202003/Java-Notes/blob/master/docs/multithread.md)
+- [Java 虚拟机](https://github.com/robert202003/Java-Notes/blob/master/docs/jvm.md)
 
 ## :floppy_disk: 数据库
 
-- [redis](https://github.com/robert202003/Java-Notes/blob/master/docs/redis.md)
+- [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/redis.md)
 - [数据库](https://github.com/robert202003/Java-Notes/blob/master/docs/database.md)
 
-## Spring框架
+## :hotsprings: Spring框架
 
 - [Spring](https://github.com/robert202003/Java-Notes/blob/master/docs/spring.md)
 

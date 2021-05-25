@@ -1,8 +1,8 @@
 # Java中高级面试宝典
 
-| &nbsp;Java&nbsp; | &nbsp;数据库&nbsp; | Spring框架| &nbsp;消息队列&nbsp; | &nbsp;编程实战&nbsp; | 
+| &nbsp;Java&nbsp; | &nbsp;数据库&nbsp; | Spring| &nbsp;消息队列&nbsp; | &nbsp;编程实战&nbsp; | 
 | :------: | :------: | :------: | :------: | :------: | 
-| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:hotsprings:](#hotsprings-Spring框架) |[:rabbit:](#rabbit-消息队列) |[:bear:](#watermelon-编程实战) |
+| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:hotsprings:](#hotsprings-Spring) |[:rabbit:](#rabbit-消息队列) |[:bear:](#watermelon-编程实战) |
 <br>
 
 ## :coffee: Java
@@ -18,7 +18,7 @@
 
 ## :hotsprings: Spring框架
 
-- [Spring框架](https://github.com/robert202003/Java-Notes/blob/master/docs/spring.md)
+- [Spring](https://github.com/robert202003/Java-Notes/blob/master/docs/spring.md)
 
 ## :rabbit: 消息队列
 
@@ -36,7 +36,7 @@
 
 ### 致谢
 
-感谢所有看过次内容的人。
+感谢所有看过此内容的人。
 
 ### 一段话
 

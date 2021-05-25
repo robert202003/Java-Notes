@@ -1,6 +1,6 @@
 # Spring面试题
 
-## 1.谈谈自己对于 Spring IoC 和 AOP 的理解
+## 谈谈自己对于 Spring IoC 和 AOP 的理解
 
 **IoC**
 IoC（Inverse of Control:控制反转）是一种设计思想，就是 将原本在程序中手动创建对象的控制权，交由Spring框架来管理。 IoC 在其他语言中也有应用，并非 Spirng 特有。 IoC 容器是 Spring 用来实现 IoC 的载体， IoC 容器实际上就是个Map（key，value）,Map 中存放的是各种对象。
@@ -14,9 +14,9 @@ AOP(Aspect-Oriented Programming:面向切面编程)能够将那些与业务无�
 
 Spring AOP就是基于动态代理的，如果要代理的对象，实现了某个接口，那么Spring AOP会使用JDK Proxy，去创建代理对象，而对于没有实现接口的对象，就无法使用 JDK Proxy 去进行代理了，这时候Spring AOP会使用Cglib ，这时候Spring AOP会使用 Cglib 生成一个被代理对象的子类来作为代理
 
-## 2.BeanFactory和ApplicationContext的区别（难度：★★★）
+## BeanFactory和ApplicationContext的区别（难度：★★★）
 
-## 3.Spring的bean作用范围有哪些（难度：★★）
+## Spring的bean作用范围有哪些（难度：★★）
 
 **singleton （默认值）**  
 将每个Spring IoC容器的单个bean定义范围限定为单个对象实例。
@@ -41,7 +41,7 @@ Spring AOP就是基于动态代理的，如果要代理的对象，实现了某�
 
 将单个bean定义的作用域限定为的生命周期WebSocket。仅在可感知网络的Spring上下文中有效ApplicationContext。
 
-## 4.Spring AOP 和 AspectJ AOP 有什么区别？
+## Spring AOP 和 AspectJ AOP 有什么区别？
 
 Spring AOP 属于运行时增强，而 AspectJ 是编译时增强。 Spring AOP 基于代理(Proxying)，而 AspectJ 基于字节码操作(Bytecode Manipulation)。
 
@@ -49,7 +49,7 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 
 如果我们的切面比较少，那么两者性能差异不大。但是，当切面太多的话，最好选择 AspectJ ，它比Spring AOP 快很多。
 
-## 5.Spring的生命周期（难度：★★★★）
+## Spring的生命周期（难度：★★★★）
 
 - Bean 容器找到配置文件中 Spring Bean 的定义，Bean 容器利用 Java Reflection API 创建一个Bean的实例。
 
@@ -148,13 +148,13 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
 
 - TransactionDefinition.ISOLATION_SERIALIZABLE: 最高的隔离级别，完全服从ACID的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。但是这将严重影响程序的性能。通常情况下也不会用到该级别。
 
-## 9.Spring的注入方式有哪些？（难度：★★）
+## Spring的注入方式有哪些？（难度：★★）
 
-## 10.Spring的加载方式有哪些？（难度：★★）
+## Spring的加载方式有哪些？（难度：★★）
 
-## 11.Spring的循环依赖问题，什么时候报异常（难度：★★★★）
+## Spring的循环依赖问题，什么时候报异常（难度：★★★★）
 
-## 12.Spring 管理事务的方式有几种？
+## Spring 管理事务的方式有几种？
 
 编程式事务，在代码中硬编码。(不推荐使用)
 
@@ -199,7 +199,7 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
 （4）模板方法：用来解决代码重复的问题。比如. RestTemplate, JmsTemplate, JpaTemplate。  
 （5）观察者模式：定义对象键一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都会得到通知被制动更新，如Spring中listener的实现--ApplicationListener。
 
-## 17.@Transactional什么时候会失效
+## @Transactional什么时候会失效
 
 1）service类标签(一般不建议在接口上)上添加@Transactional，可以将整个类纳入spring事务管理，在每个业务方法执行时都会开启一个事务，不过这些事务采用相同的管理方式。
 
@@ -209,7 +209,7 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
 
 4）只读事务： @Transactional(propagation=Propagation.NOT_SUPPORTED,readOnly=true) 只读标志只在事务启动时应用，否则即使配置也会被忽略。
 
-## 18.@Autowired和@Resource之间的区别
+## @Autowired和@Resource之间的区别
 
 (1) @Autowired默认是按照类型装配注入的，默认情况下它要求依赖对象必须存在（可以设置它required属性为false）。  
 (2) @Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入。

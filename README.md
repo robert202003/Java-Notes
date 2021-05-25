@@ -2,7 +2,7 @@
 
 | Java基础| &nbsp;多线程&nbsp; | Java虚拟机| &nbsp;数据库&nbsp; | &nbsp;Redis缓存&nbsp; |&nbsp;Spring框架&nbsp;|  
 | :------: | :------: | :------: | :------: | :------: | :------: | 
-| [:coffee:](#coffee-Java) |
+| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-redis) | [:hotsprings:](#hotsprings-spring) |
 <br>
 
 ## :coffee: Java
@@ -19,6 +19,10 @@
 ## :hotsprings: Spring框架
 
 - [Spring框架](https://github.com/robert202003/Java-Notes/blob/master/docs/spring.md)
+
+## :rabbit: 消息队列
+
+- [RabbitMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/rabbit.md)
 
 ## :watermelon: 编程实战
 

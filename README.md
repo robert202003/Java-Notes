@@ -26,7 +26,7 @@
 
 ## :bear: 编程实战
 
-- [编程实战](https://github.com/robert202003/Java-Notes/blob/master/docs/pratice.md)
+- [编程实战](https://github.com/robert202003/Java-Notes/blob/master/docs/practice.md)
 
 ### License
 

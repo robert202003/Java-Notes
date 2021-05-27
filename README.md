@@ -1,8 +1,8 @@
 # Java中高级面试宝典
 
 | &nbsp;Java&nbsp; | &nbsp;数据库&nbsp; | &nbsp;消息队列&nbsp;| Spring、Mybatis | &nbsp;编程实战&nbsp; | 
-| :------: | :------: | :------: | :------: | :------: | :------: | 
-| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:rabbit:](#rabbit-消息队列) | [:hotsprings:](#hotsprings-Spring) | [:mybatis:](#mybatis-Mybatis) |[:bear:](#bear-编程实战) |
+| :------: | :------: | :------: | :------: | :------: | 
+| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:rabbit:](#rabbit-消息队列) | [:hotsprings:](#hotsprings-Spring) | [:bear:](#bear-编程实战) |
 <br>
 
 ## :coffee: Java

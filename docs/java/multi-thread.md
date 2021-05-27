@@ -1,8 +1,53 @@
-## 进程和线程的区别（难度：★★）
+- [线程基础](#线程基础理解)
+  - [进程和线程的区别](#进程和线程的区别)
+  - [什么是上下文切换](#什么是上下文切换)
+  - [什么是线程死锁](#什么是线程死锁)
+  - [如何预防线程死锁](#如何预防线程死锁)
+  - [线程的创建方式](#线程的创建方式)
+  - [Java线程具有五种状态](#Java线程具有五种状态)
+  - [Java中sleep和wait的区别](#Java中sleep和wait的区别)
+  - [java中的synchronized原理](#synchronized实现原理)  
+  - [java对象头包含哪些内容](#java对象头包含哪些内容)
+  - [volatile理解](#volatile理解)
+  - [synchronized和volatile的区别](#synchronized和volatile的区别)
+  - [ReentrantLock实现原理](#ReentrantLock实现原理)
+  - [synchronized和ReentrantLock的区别](#synchronized和ReentrantLock的区别)
+- [常见并发类源码分析](#常见并发类源码分析)  
+  - [ReentrantReadWriteLock原理](#ReentrantReadWriteLock原理)
+  - [ThreadLocal实现原理和内存泄露](#ThreadLocal实现原理和内存泄露)
+- [常见锁的认识](#常见锁的认识)  
+  - [乐观锁和悲观锁区别](#乐观锁和悲观锁区别)
+  - [什么是可重入锁](#什么是可重入锁)  
+  - [什么是自旋锁](#什么是自旋锁)  
+  - [公平锁和非公平锁的区别](#公平锁和非公平锁的区别)
+  - [独占锁和共享锁的区别](#独占锁和共享锁的区别)
+- [ThreadPoolExecutor线程池](#ThreadPoolExecutor线程池)  
+  - [ThreadPoolExecutor线程池核心参数和原理](#ThreadPoolExecutor线程池核心参数和原理)  
+- [CountDownLatch、CyclicBarrier、Semaphore三剑客](#CountDownLatch、CyclicBarrier、Semaphore三剑客)  
+  - [CountDownLatch原理和使用](#CountDownLatch原理和使用)
+  - [CyclicBarrier原理和使用](#CyclicBarrier原理和使用)
+  - [Semaphore原理和使用](#Semaphore原理和使用)
+- [阻塞队列](#阻塞队列)  
+  - [ConcurrentLinkedQueue原理](#ConcurrentLinkedQueue原理)
+  - [LinkedBlockingQueue原理](#LinkedBlockingQueue原理)
+  - [ArrayBlockingQueue原理](#ArrayBlockingQueue原理)
+  - [PriorityBlockingQueue原理](#PriorityBlockingQueue原理)
+  - [DelayQueue原理](#DelayQueue原理)
+  - [SynchronousQueue](#SynchronousQueue)
+  - [LinkedTransferQueue](#LinkedTransferQueue)
+- [AQS 和 CAS原理](#AQS和CAS原理)  
+  - [AQS原理](#AQS底层原理)
+  - [CAS原理](#CAS底层原理)
+  
+  
+
+## 线程基础理解
+
+### 进程和线程的区别
 - 进程是代码在数据集合上的一次运行活动，是系统进行资源分配和调度的基本单元。
 - 线程则是进程的执行路径，一个进程至少有一个线程，线程是CPU分配的基本单元。
 
-## 什么是上下文切换?
+### 什么是上下文切换?
 
 多线程编程中一般线程的个数都大于 CPU 核心的个数，而一个 CPU 核心在任意时刻只能被一个线程使用，为了让这些线程都能得到有效执行，CPU 采取的策略是为每个线程分配时间片并轮转的形式。当一个线程的时间片用完的时候就会重新处于就绪状态让给其他线程使用，这个过程就属于一次上下文切换。
 
@@ -12,7 +57,7 @@
 
 Linux 相比与其他操作系统（包括其他类 Unix 系统）有很多的优点，其中有一项就是，其上下文切换和模式切换的时间消耗非常少。
 
-## 什么是线程死锁？
+### 什么是线程死锁？
 
 多个线程同时被阻塞，它们中的一个或者全部都在等待某个资源被释放。由于线程被无限期地阻塞，因此程序不可能正常终止。
 
@@ -43,12 +88,12 @@ Linux 相比与其他操作系统（包括其他类 Unix 系统）有很多的�
 
 靠按序申请资源来预防。按某一顺序申请资源，释放资源则反序释放。破坏循环等待条件。
 
-## 线程的创建方式（难度：★）
+### 线程的创建方式
 - 继承Thread类
 - 实现runnable接口
 - 实现callable接口，有返回值
 
-## Java线程具有五种状态（难度：★）
+### Java线程具有五种状态
 
 **1. 新建状态（New）**  
 当线程对象对创建后，即进入了新建状态，如：Thread t = new MyThread()。
@@ -69,7 +114,7 @@ Linux 相比与其他操作系统（包括其他类 Unix 系统）有很多的�
 **5. 死亡状态（Dead）**  
 线程执行完了或者因异常退出了 run()方法，该线程结束 生命周期。
 
-## Java中sleep和wait的区别（难度：★）
+### Java中sleep和wait的区别
 
 - sleep方法是Thread类的静态方法，wait方法是Object类的成员方法。  
 - sleep方法不会释放lock，但是wait会释放lock，而且会加入等待队列中  
@@ -77,7 +122,7 @@ Linux 相比与其他操作系统（包括其他类 Unix 系统）有很多的�
 - sleep方法有可能会抛出异常，所以需要进行异常处理；wait方法不需要处理  
 - sleep方法可以在任何地方使用；wait方法只能在同步方法和同步代码块中使用  
 
-## synchronized实现原理（难度：★★★★）
+### synchronized实现原理
 
 **1. 作用**  
 原子性：确保线程互斥的访问同步代码；
@@ -134,7 +179,7 @@ Synchronized方法同步不再是通过插入monitorentry和monitorexit指令实
 
 但是如果自旋的时间太长也不行，因为自旋是要消耗CPU的，因此自旋的次数是有限制的，比如10次或者100次，如果自旋次数到了线程1还没有释放锁，或者线程1还在执行，线程2还在自旋等待，这时又有一个线程3过来竞争这个锁对象，那么这个时候轻量级锁就会膨胀为重量级锁。重量级锁把除了拥有锁的线程都阻塞，防止CPU空转。
 
-## java对象头包含哪些内容（难度：★★★）
+### java对象头包含哪些内容
 
 对象大致可以分为三个部分，分别是对象头、实例变量和填充字节
 
@@ -155,7 +200,7 @@ Synchronized方法同步不再是通过插入monitorentry和monitorexit指令实
 
 - 最后一部分是对齐填充的字节，按8个字节填充
 
-## volatile理解难度：（难度：★★★）
+## volatile理解
 
 1）保证内存可见性
 
@@ -169,7 +214,7 @@ JMM是允许编译器和处理器对指令重排序的，但是规定了as-if-se
 
 说明：volatile并不能保证原子性
 
-## synchronized和volatile的区别？（难度：★★★）
+### synchronized和volatile的区别？
 
 一旦一个共享变量（类的成员变量、类的静态成员变量）被volatile修饰之后，那么就具备了两层语义：   
 1.保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的。  
@@ -182,12 +227,9 @@ JMM是允许编译器和处理器对指令重排序的，但是规定了as-if-se
 - volatile不会造成线程的阻塞；synchronized可能会造成线程的阻塞。  
 - volatile标记的变量不会被编译器优化；synchronized标记的变量可以被编译器优化。  
 
-## ReentrantLock实现原理（难度：★★★★）
+### ReentrantLock实现原理
 
-
-## ReentrantReadWriteLock原理（难度：★★★★）
-
-## synchronized和ReentrantLock的区别（难度：★★★）
+### synchronized和ReentrantLock的区别
 
 synchronized是和if、else、for、while一样的关键字，ReentrantLock是类，这是二者的本质区别。既然ReentrantLock是类，那么它就提供了比synchronized更多更灵活的特性，可以被继承、可以有方法、可以有各种各样的类变量，ReentrantLock比synchronized的扩展性体现在几点上： 
 
@@ -196,36 +238,98 @@ synchronized是和if、else、for、while一样的关键字，ReentrantLock是�
 - ReentrantLock可以灵活地实现多路通知 
 - 另外，二者的锁机制其实也是不一样的:ReentrantLock底层调用的是Unsafe的park方法加锁，synchronized操作的应该是对象头中mark word.
 
-## 11.ThreadLocal实现原理和内存泄露（难度：★★★）
+## 常见并发类源码分析
+
+### ReentrantReadWriteLock原理
+
+### ThreadLocal实现原理和内存泄露
 
 待补充......
 
-## 12.ThreadLocalRandom原理（难度：★★★）
+### ThreadLocalRandom原理
 
 待补充......
 
-## 13.乐观锁和悲观锁区别（难度：★★）
+## 常见锁的认识
+
+### 乐观锁和悲观锁区别
 
 - 乐观锁：乐观锁认为竞争不总是会发生，因此它不需要持有锁，将比较-替换这两个动作作为一个原子操作尝试去修改内存中的变量，如果失败则表示发生冲突，那么就应该有相应的重试逻辑。
 - 悲观锁：悲观锁认为竞争总是会发生，因此每次对某资源进行操作时，都会持有一个独占的锁，就像synchronized，不管三七二十一，直接上了锁就操作资源了。
 
-## 14.什么是可重入锁？（难度：★★★）
+### 什么是可重入锁？
 
 待补充......
 
-## 15.什么是自旋锁？（难度：★★★）
+##% 什么是自旋锁？
 
 待补充......
 
-## 16.公平锁和非公平锁的区别（难度：★★★）
+### 公平锁和非公平锁的区别
 
 待补充......
 
-## 17.独占锁和共享锁的区别（难度：★★★）
+### 独占锁和共享锁的区别
 
 待补充......
 
-## 18.如何实现接口的幂等性（难度：★★★）
+## CountDownLatch、CyclicBarrier、Semaphore三剑客
+
+### CountDownLatch原理和使用
+
+**1. 原理**  
+CountDownLatch是使用AQS实现的，使用AQS的状态变量来存放计数器的值。首先在初始化CountDownLatch时设置状态值（计算器值），当多个线程调用countdown
+方法时实际是原子性递减AQS的状态值。当线程调用await方法后当前线程会被放入AQS的阻塞队列等待计数器为0再返回。其他线程调用countdown方法让计数器值递减1，
+当计数器值变为0时，当前线程还要调用AQS的doReleaseShared方法来激活由于调用await()方法而被阻塞的线程。
+
+**2. 使用**
+
+### CyclicBarrier原理和使用
+
+待补充......
+
+### Semaphore原理和使用
+
+待补充......
+
+## 阻塞队列
+
+### ConcurrentLinkedQueue原理
+
+待补充......
+
+### LinkedBlockingQueue原理
+
+待补充......
+
+### ArrayBlockingQueue原理
+
+待补充......
+
+### PriorityBlockingQueue原理
+
+待补充......
+
+### DelayQueue原理
+
+待补充......
+
+### SynchronousQueue
+
+待补充......
+
+### LinkedTransferQueue
+
+待补充......
+
+### LinkedBlockingDeque
+
+待补充......
+
+
+### CompletableFuture使用
+
+### 如何实现接口的幂等性
 
 1）乐观锁
 这种方法适合在更新的场景中，update t_goods set count = count -1 , version = version + 1 where good_id=2 and version = 1
@@ -240,39 +344,12 @@ synchronized是和if、else、for、while一样的关键字，ReentrantLock是�
 3）分布式锁
 ……
 
-## 19.AQS底层原理（难度：★★★★★）
+## AQS 和 CAS原理
+ 
+### AQS底层原理
 
-## 20.理解CAS（难度：★★★）
+待补充......
 
-## 21.CountDownLatch原理和使用（难度：★★★★）
+### CAS底层原理
 
-**1. 原理**  
-CountDownLatch是使用AQS实现的，使用AQS的状态变量来存放计数器的值。首先在初始化CountDownLatch时设置状态值（计算器值），当多个线程调用countdown
-方法时实际是原子性递减AQS的状态值。当线程调用await方法后当前线程会被放入AQS的阻塞队列等待计数器为0再返回。其他线程调用countdown方法让计数器值递减1，
-当计数器值变为0时，当前线程还要调用AQS的doReleaseShared方法来激活由于调用await()方法而被阻塞的线程。
-
-**2. 使用**
-
-## 22.CyclicBarrier原理和使用（难度：★★★★）
-
-## 23.Semaphore原理和使用（难度：★★★★）
-
-## 24.ThreadPoolExecutor线程池核心参数和原理（难度：★★★）
-
-## 25.CompletableFuture使用
-
-## 26.ConcurrentLinkedQueue原理（难度：★★★★）
-
-## 27.LinkedBlockingQueue原理（难度：★★★★）
-
-## 28.ArrayBlockingQueue原理（难度：★★★★）
-
-## 29.PriorityBlockingQueue原理（难度：★★★★）
-
-## 30.DelayQueue原理（难度：★★★★）
-
-## 31.SynchronousQueue（难度：★★★★）
-
-## 32.LinkedTransferQueue（难度：★★★★）
-
-## 33.LinkedBlockingDeque（难度：★★★★）
+待补充......

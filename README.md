@@ -8,10 +8,8 @@
 ## :coffee: Java
 
 - [Java 基础](https://github.com/robert202003/Java-Notes/blob/master/docs/java/basic.md)
-- [Java 容器](https://github.com/robert202003/Java-Notes/blob/master/docs/java/multithread.md)
+- [Java 容器](https://github.com/robert202003/Java-Notes/blob/master/docs/java/collections.md)
 - [Java IO](https://github.com/robert202003/Java-Notes/blob/master/docs/java/io.md)
-- [Java 反射](https://github.com/robert202003/Java-Notes/blob/master/docs/java/reflect.md)
-- [Java 泛型](https://github.com/robert202003/Java-Notes/blob/master/docs/java/generic.md)
 - [Java 多线程](https://github.com/robert202003/Java-Notes/blob/master/docs/java/multi-thread.md)
 - [Java 虚拟机](https://github.com/robert202003/Java-Notes/blob/master/docs/java/jvm.md)
 

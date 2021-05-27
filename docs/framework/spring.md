@@ -1,6 +1,23 @@
-# Spring面试题
+- [SpringIoC和AOP](#SpringIoC和AOP)
+- [BeanFactory和ApplicationContext的区别](#BeanFactory和ApplicationContext的区别)
+- [Spring的bean作用范围](#Spring的bean作用范围)
+- [Spring AOP 和 AspectJ AOP 有什么区别](#SpringAOP和AspectJAOP有什么区别)
+- [Spring的生命周期](#Spring的生命周期)
+- [Spring MVC原理](#Spring MVC原理)
+- [Spring的事务传播机制](#Spring的事务传播机制)
+- [Spring事务中的隔离级别有哪几种](#Spring事务中的隔离级别有哪几种)
+- [Spring的注入方式有哪些](#Spring的注入方式有哪些)
+- [Spring的加载方式有哪些](#Spring的加载方式有哪些)
+- [Spring的循环依赖问题，什么时候报异常](#Spring的循环依赖问题，什么时候报异常)
+- [Spring管理事务的方式有几种](#Spring管理事务的方式有几种)
+- [过滤器（filter）和拦截器（Interceptor）的区别](#过滤器（filter）和拦截器（Interceptor）的区别)
+- [@Component 和 @Bean 的区别是什么？](#@Component和@Bean的区别是什么)
+- [Spring框架中的单例bean是线程安全的吗？如果不安全如何解决](#Spring框架中的单例bean是线程安全的吗？如果不安全如何解决)
+- [Spring框架中都用到了哪些设计模式](#Spring框架中都用到了哪些设计模式)
+- [@Transactional什么时候会失效](#@Transactional什么时候会失效)
+- [@Autowired和@Resource之间的区别](#@Autowired和@Resource之间的区别)
 
-## 谈谈自己对于 Spring IoC 和 AOP 的理解
+## SpringIoC和AOP
 
 **IoC**
 IoC（Inverse of Control:控制反转）是一种设计思想，就是 将原本在程序中手动创建对象的控制权，交由Spring框架来管理。 IoC 在其他语言中也有应用，并非 Spirng 特有。 IoC 容器是 Spring 用来实现 IoC 的载体， IoC 容器实际上就是个Map（key，value）,Map 中存放的是各种对象。
@@ -14,9 +31,9 @@ AOP(Aspect-Oriented Programming:面向切面编程)能够将那些与业务无�
 
 Spring AOP就是基于动态代理的，如果要代理的对象，实现了某个接口，那么Spring AOP会使用JDK Proxy，去创建代理对象，而对于没有实现接口的对象，就无法使用 JDK Proxy 去进行代理了，这时候Spring AOP会使用Cglib ，这时候Spring AOP会使用 Cglib 生成一个被代理对象的子类来作为代理
 
-## BeanFactory和ApplicationContext的区别（难度：★★★）
+## BeanFactory和ApplicationContext的区别？
 
-## Spring的bean作用范围有哪些（难度：★★）
+## Spring的bean作用范围？
 
 **singleton （默认值）**  
 将每个Spring IoC容器的单个bean定义范围限定为单个对象实例。
@@ -49,7 +66,7 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 
 如果我们的切面比较少，那么两者性能差异不大。但是，当切面太多的话，最好选择 AspectJ ，它比Spring AOP 快很多。
 
-## Spring的生命周期（难度：★★★★）
+## Spring的生命周期
 
 - Bean 容器找到配置文件中 Spring Bean 的定义，Bean 容器利用 Java Reflection API 创建一个Bean的实例。
 
@@ -99,7 +116,8 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 
 11.前端控制器向用户响应结果。
 
-## Spring的事务传播机制（难度：★★★）
+## Spring的事务传播机制
+
 支持当前事务的情况：
 
 - TransactionDefinition.PROPAGATION_REQUIRED： 如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。
@@ -134,7 +152,7 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
       2.NEVER: 不可在事务中执行, 如果当前存在事务, 则抛出异常  
 4).NESTED:嵌套事务. 如果当前存在事务, 则嵌套执行, 如果当前不存在事务, 则开启新事务。
 
-## Spring 事务中的隔离级别有哪几种?
+## Spring事务中的隔离级别有哪几种？
 
 - TransactionDefinition 接口中定义了五个表示隔离级别的常量：
 
@@ -148,13 +166,13 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
 
 - TransactionDefinition.ISOLATION_SERIALIZABLE: 最高的隔离级别，完全服从ACID的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。但是这将严重影响程序的性能。通常情况下也不会用到该级别。
 
-## Spring的注入方式有哪些？（难度：★★）
+## Spring的注入方式有哪些？
 
-## Spring的加载方式有哪些？（难度：★★）
+## Spring的加载方式有哪些？
 
-## Spring的循环依赖问题，什么时候报异常（难度：★★★★）
+## Spring的循环依赖问题，什么时候报异常
 
-## Spring 管理事务的方式有几种？
+## Spring管理事务的方式有几种？
 
 编程式事务，在代码中硬编码。(不推荐使用)
 
@@ -191,7 +209,7 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
 
 在类中定义一个ThreadLocal成员变量，将需要的可变成员变量保存在 ThreadLocal 中（推荐的一种方式）。
 
-## spring 框架中都用到了哪些设计模式？
+## Spring框架中都用到了哪些设计模式？
 
 （1）工厂模式：BeanFactory就是简单工厂模式的体现，用来创建对象的实例。  
 （2）单例模式：Bean默认为单例模式。  

@@ -3,7 +3,7 @@
 - [Spring的bean作用范围](#Spring的bean作用范围)
 - [Spring AOP 和 AspectJ AOP 有什么区别](#SpringAOP和AspectJAOP有什么区别)
 - [Spring的生命周期](#Spring的生命周期)
-- [Spring MVC原理](#Spring MVC原理)
+- [Spring MVC原理](#SpringMVC原理)
 - [Spring的事务传播机制](#Spring的事务传播机制)
 - [Spring事务中的隔离级别有哪几种](#Spring事务中的隔离级别有哪几种)
 - [Spring的注入方式有哪些](#Spring的注入方式有哪些)

@@ -238,6 +238,8 @@ synchronized是和if、else、for、while一样的关键字，ReentrantLock是�
 - ReentrantLock可以灵活地实现多路通知 
 - 另外，二者的锁机制其实也是不一样的:ReentrantLock底层调用的是Unsafe的park方法加锁，synchronized操作的应该是对象头中mark word.
 
+
+
 ## 常见并发类源码分析
 
 ### ReentrantReadWriteLock原理
@@ -272,6 +274,7 @@ synchronized是和if、else、for、while一样的关键字，ReentrantLock是�
 ### 独占锁和共享锁的区别
 
 待补充......
+
 
 ## CountDownLatch、CyclicBarrier、Semaphore三剑客
 

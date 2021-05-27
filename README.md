@@ -1,42 +1,46 @@
 # 吊打面试官
 
-| &nbsp;Java&nbsp; | &nbsp;数据库&nbsp; | &nbsp;微服务开发&nbsp;|&nbsp;消息队列&nbsp;| 常用框架 | &nbsp;编程实战&nbsp; | 
-| :------: | :------: | :------: | :------: | :------: | :------: | 
-| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:cloud:](#cloud-微服务开发) | [:rabbit:](#rabbit-消息队列) | [:hotsprings:](#hotsprings-常用框架) | [:bear:](#bear-编程实战) |
+| &nbsp;Java&nbsp; | &nbsp;数据库&nbsp; | 常用框架 | &nbsp;微服务开发&nbsp;|&nbsp;消息队列&nbsp;|  设计模式 | &nbsp;编程实战&nbsp; | 
+| :------: | :------: | :------: | :------: | :------: | :------: | :------: |
+| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:hotsprings:](#hotsprings-常用框架) |[:cloud:](#cloud-微服务开发) | [:rabbit:](#rabbit-消息队列) | [:gun:](#gun-设计模式) | [:bear:](#bear-编程实战) |
 <br>
 
 ## :coffee: Java
 
-- [Java 基础](https://github.com/robert202003/Java-Notes/blob/master/docs/java.md)
-- [Java 容器](https://github.com/robert202003/Java-Notes/blob/master/docs/multithread.md)
-- [Java IO](https://github.com/robert202003/Java-Notes/blob/master/docs/io.md)
-- [Java 反射](https://github.com/robert202003/Java-Notes/blob/master/docs/reflect.md)
-- [Java 泛型](https://github.com/robert202003/Java-Notes/blob/master/docs/generic.md)
-- [Java 多线程](https://github.com/robert202003/Java-Notes/blob/master/docs/multithread.md)
-- [Java 虚拟机](https://github.com/robert202003/Java-Notes/blob/master/docs/jvm.md)
+- [Java 基础](https://github.com/robert202003/Java-Notes/blob/master/docs/java/basic.md)
+- [Java 容器](https://github.com/robert202003/Java-Notes/blob/master/docs/java/multithread.md)
+- [Java IO](https://github.com/robert202003/Java-Notes/blob/master/docs/java/io.md)
+- [Java 反射](https://github.com/robert202003/Java-Notes/blob/master/docs/java/reflect.md)
+- [Java 泛型](https://github.com/robert202003/Java-Notes/blob/master/docs/java/generic.md)
+- [Java 多线程](https://github.com/robert202003/Java-Notes/blob/master/docs/java/multi-thread.md)
+- [Java 虚拟机](https://github.com/robert202003/Java-Notes/blob/master/docs/java/jvm.md)
 
 ## :floppy_disk: 数据库
 
-- [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/redis.md)
-- [MySQL](https://github.com/robert202003/Java-Notes/blob/master/docs/database.md)
+- [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/redis.md)
+- [MySQL](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/database.md)
+
+## :hotsprings: 常用框架
+
+- [Spring](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/spring.md)
+- [Mybatis](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/mybatis.md)
+- [SpringBoot](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/springboot.md)
 
 ## :cloud: 微服务开发
 
-- [Zookeeper](https://github.com/robert202003/Java-Notes/blob/master/docs/zookeeper.md)
-- [Nacos](https://github.com/robert202003/Java-Notes/blob/master/docs/nacos.md)
-- [Eureka](https://github.com/robert202003/Java-Notes/blob/master/docs/eureka.md)
-- [Hystrix](https://github.com/robert202003/Java-Notes/blob/master/docs/hystrix.md)
-- [Feign](https://github.com/robert202003/Java-Notes/blob/master/docs/feign.md)
+- [Zookeeper](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/zookeeper.md)
+- [Nacos原理](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/nacos.md)
+- [Eureka](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/eureka.md)
+- [Hystrix](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/hystrix.md)
+- [Feign](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/feign.md)
 
 ## :rabbit: 消息队列
 
 - [RabbitMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/rabbit.md)
 
-## :hotsprings: 常用框架
+## :gun: 设计模式
 
-- [Spring](https://github.com/robert202003/Java-Notes/blob/master/docs/spring.md)
-- [Mybatis](https://github.com/robert202003/Java-Notes/blob/master/docs/mybatis.md)
-- [SpringBoot](https://github.com/robert202003/Java-Notes/blob/master/docs/springboot.md)
+- [设计模式](https://github.com/robert202003/Java-Notes/blob/master/docs/design-pattern.md)
 
 ## :bear: 编程实战
 

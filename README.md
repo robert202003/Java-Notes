@@ -1,8 +1,8 @@
 # Java中高级面试宝典
 
-| &nbsp;Java&nbsp; | &nbsp;数据库&nbsp; | Spring| &nbsp;消息队列&nbsp; | &nbsp;编程实战&nbsp; | 
-| :------: | :------: | :------: | :------: | :------: | 
-| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:hotsprings:](#hotsprings-Spring) |[:rabbit:](#rabbit-消息队列) |[:bear:](#bear-编程实战) |
+| &nbsp;Java&nbsp; | &nbsp;数据库&nbsp; | &nbsp;消息队列&nbsp;| Spring、Mybatis | &nbsp;编程实战&nbsp; | 
+| :------: | :------: | :------: | :------: | :------: | :------: | 
+| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:rabbit:](#rabbit-消息队列) | [:hotsprings:](#hotsprings-Spring) | [:mybatis:](#mybatis-Mybatis) |[:bear:](#bear-编程实战) |
 <br>
 
 ## :coffee: Java
@@ -16,13 +16,15 @@
 - [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/redis.md)
 - [数据库](https://github.com/robert202003/Java-Notes/blob/master/docs/database.md)
 
-## :hotsprings: Spring框架
-
-- [Spring](https://github.com/robert202003/Java-Notes/blob/master/docs/spring.md)
-
 ## :rabbit: 消息队列
 
 - [RabbitMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/rabbit.md)
+
+## :hotsprings: Spring、Mybatis
+
+- [Spring](https://github.com/robert202003/Java-Notes/blob/master/docs/spring.md)
+
+- [Mybatis](https://github.com/robert202003/Java-Notes/blob/master/docs/mybatis.md)
 
 ## :bear: 编程实战
 

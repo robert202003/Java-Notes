@@ -289,6 +289,163 @@ ReentrantLock是基于AQS实现可重入的独占锁，同时只能有一个线�
 
 ### ThreadPoolExecutor线程池
 
+**Executors**
+
+Executors其实是个工具类，里面提供了好多静态方法，根据用户选择返回不同的线程池实例。ThreadPoolExecutor继承了AbstractExecutorService，成员变量ctl是个Integer的原子变量用来记录线程池状态 和 线程池线程个数，类似于ReentrantReadWriteLock使用一个变量存放两种信息。
+
+这里假设Integer类型是32位二进制标示，其中高3位用来表示线程池状态，后面 29位用来记录线程池线程个数。
+
+```java
+//用来标记线程池状态（高3位），线程个数（低29位）
+//默认是RUNNING状态，线程个数为0
+
+private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
+
+//线程个数掩码位数
+private static final int COUNT_BITS = Integer.SIZE - 3;
+
+//线程最大个数(低29位)00011111111111111111111111111111
+private static final int CAPACITY   = (1 << COUNT_BITS) - 1;
+
+//（高3位）：11100000000000000000000000000000
+private static final int RUNNING    = -1 << COUNT_BITS;
+
+//（高3位）：00000000000000000000000000000000
+private static final int SHUTDOWN   =  0 << COUNT_BITS;
+
+//（高3位）：00100000000000000000000000000000
+private static final int STOP       =  1 << COUNT_BITS;
+
+//（高3位）：01000000000000000000000000000000
+private static final int TIDYING    =  2 << COUNT_BITS;
+
+//（高3位）：01100000000000000000000000000000
+private static final int TERMINATED =  3 << COUNT_BITS;
+
+// 获取高三位 运行状态
+private static int runStateOf(int c)     { return c & ~CAPACITY; }
+
+//获取低29位 线程个数
+private static int workerCountOf(int c)  { return c & CAPACITY; }
+
+//计算ctl新值，线程状态 与 线程个数
+private static int ctlOf(int rs, int wc) { return rs | wc; }
+
+```
+
+**线程池状态含义：**
+
+- RUNNING：接受新任务并且处理阻塞队列里的任务
+- SHUTDOWN：拒绝新任务但是处理阻塞队列里的任务
+- STOP：拒绝新任务并且抛弃阻塞队列里的任务同时会中断正在处理的任务
+- TIDYING：所有任务都执行完（包含阻塞队列里面任务）当前线程池活动线程为0，将要调用terminated方法
+- TERMINATED：终止状态。terminated方法调用完成以后的状态
+
+**线程池状态转换：**
+
+- RUNNING -> SHUTDOWN 显式调用shutdown()方法，或者隐式调用了finalize(),它里面调用了shutdown（）方法。
+- RUNNING or SHUTDOWN)-> STOP 显式 shutdownNow()方法
+- SHUTDOWN -> TIDYING 当线程池和任务队列都为空的时候
+- STOP -> TIDYING 当线程池为空的时候
+- TIDYING -> TERMINATED 当 terminated() hook 方法执行完成时候
+
+**线程池参数**
+
+- corePoolSize：线程池核心线程个数
+
+- workQueue：用于保存等待执行的任务的阻塞队列，比如基于数据的有限ArrayBlockingQueue、基于链表的无界LinkedBlockingQueue、最多只有一个元素的同步队列SynchronousQueue及优先级队列PriorityBlockingQueue等。
+
+- maximunPoolSize：线程池最大线程数量。
+
+- ThreadFactory：创建线程的工厂
+
+- RejectedExecutionHandler：饱和策略，当队列满了并且线程个数达到maximunPoolSize后采取的策略，比如AbortPolicy(抛出异常)，CallerRunsPolicy(使用调用者所在线程来运行任务)，DiscardOldestPolicy(调用poll丢弃一个任务，执行当前任务)，DiscardPolicy(默默丢弃,不抛出异常)
+
+- keeyAliveTime：存活时间。如果当前线程池中的线程数量比基本数量要多，并且是闲置状态的话，这些闲置的线程能存活的最大时间
+
+- TimeUnit，存活时间的时间单位。
+
+**线程池类型：**
+
+- newFixedThreadPool
+
+创建一个核心线程个数和最大线程个数都为nThreads的线程池，并且阻塞队列长度为Integer.MAX_VALUE，keeyAliveTime=0说明只要线程个数比核心线程个数多并且当前空闲则回收。
+
+```java
+   public static ExecutorService newFixedThreadPool(int nThreads) {
+       return new ThreadPoolExecutor(nThreads, nThreads,
+                                     0L, TimeUnit.MILLISECONDS,
+                                     new LinkedBlockingQueue<Runnable>());
+   }
+//使用自定义线程创建工厂
+public static ExecutorService newFixedThreadPool(int nThreads, ThreadFactory threadFactory) {
+       return new ThreadPoolExecutor(nThreads, nThreads,
+                                     0L, TimeUnit.MILLISECONDS,
+                                     new LinkedBlockingQueue<Runnable>(),
+                                     threadFactory);
+   }
+```
+
+- newSingleThreadExecutor
+
+创建一个核心线程个数和最大线程个数都为1的线程池，并且阻塞队列长度为Integer.MAX_VALUE，keeyAliveTime=0说明只要线程个数比核心线程个数多并且当前空闲则回收。
+
+```java
+   public static ExecutorService newSingleThreadExecutor() {
+       return new FinalizableDelegatedExecutorService
+           (new ThreadPoolExecutor(1, 1,
+                                   0L, TimeUnit.MILLISECONDS,
+                                   new LinkedBlockingQueue<Runnable>()));
+   }
+
+   //使用自己的线程工厂
+   public static ExecutorService newSingleThreadExecutor(ThreadFactory threadFactory) {
+       return new FinalizableDelegatedExecutorService
+           (new ThreadPoolExecutor(1, 1,
+                                   0L, TimeUnit.MILLISECONDS,
+                                   new LinkedBlockingQueue<Runnable>(),
+                                   threadFactory));
+   }
+```
+
+- newCachedThreadPool
+
+创建一个按需创建线程的线程池，初始线程个数为0，最多线程个数为Integer.MAX_VALUE，并且阻塞队列为同步队列，keeyAliveTime=60说明只要当前线程60s内空闲则回收。这个特殊在于加入到同步队列的任务会被马上被执行，同步队列里面最多只有一个任务，并且存在后马上会拿出执行。
+
+```java
+  public static ExecutorService newCachedThreadPool() {
+       return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                     60L, TimeUnit.SECONDS,
+                                     new SynchronousQueue<Runnable>());
+   }
+
+   //使用自定义的线程工厂
+   public static ExecutorService newCachedThreadPool(ThreadFactory threadFactory) {
+       return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                     60L, TimeUnit.SECONDS,
+                                     new SynchronousQueue<Runnable>(),
+                                     threadFactory);
+   }
+```
+- newSingleThreadScheduledExecutor
+
+创建一个最小线程个数corePoolSize为1，最大为Integer.MAX_VALUE，阻塞队列为DelayedWorkQueue的线程池。
+
+```java
+   public static ScheduledExecutorService newSingleThreadScheduledExecutor() {
+       return new DelegatedScheduledExecutorService
+           (new ScheduledThreadPoolExecutor(1));
+   }
+```
+- newScheduledThreadPool
+
+创建一个最小线程个数corePoolSize，最大为Integer.MAX_VALUE，阻塞队列为DelayedWorkQueue的线程池。
+
+```java
+   public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) {
+       return new ScheduledThreadPoolExecutor(corePoolSize);
+   }
+```
 
 ## Java并发包中线程同步器
 

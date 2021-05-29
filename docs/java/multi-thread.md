@@ -449,6 +449,49 @@ public static ExecutorService newFixedThreadPool(int nThreads, ThreadFactory thr
    }
 ```
 
+**源码分析**
+
+添加任务到线程池exectue方法
+
+```java
+public void execute(Runnable command) {
+
+   if (command == null)
+       throw new NullPointerException();
+  
+   //获取当前线程池的状态+线程个数变量
+   int c = ctl.get();
+
+   //当前线程池线程个数是否小于corePoolSize,小于则开启新线程运行
+   if (workerCountOf(c) < corePoolSize) {
+       if (addWorker(command, true))
+           return;
+       c = ctl.get();
+   }
+
+   //如果线程池处于RUNNING状态，则添加任务到阻塞队列
+   if (isRunning(c) && workQueue.offer(command)) {
+
+       //二次检查
+       int recheck = ctl.get();
+       //如果当前线程池状态不是RUNNING则从队列删除任务，并执行拒绝策略
+       if (! isRunning(recheck) && remove(command))
+           reject(command);
+
+       //否者如果当前线程池线程空，则添加一个线程
+       else if (workerCountOf(recheck) == 0)
+           addWorker(null, false);
+   }
+   //如果队列满了，则新增线程，新增失败则执行拒绝策略
+   else if (!addWorker(command, false))
+       reject(command);
+}
+```
+
+- 如果当前线程池线程个数小于corePoolSize则开启新线程
+- 否则添加任务到任务队列
+- 如果任务队列满了，则尝试新开启线程执行任务，如果线程个数>maximumPoolSize则执行拒绝策略
+
 ## Java并发包中线程同步器
 
 ### CountDownLatch原理

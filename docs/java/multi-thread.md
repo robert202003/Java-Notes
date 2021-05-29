@@ -354,6 +354,87 @@ Semaphore还是使用AQS来实现的。Sync只是对AQS的一个修饰，Sync有
             doAcquireSharedInterruptibly(arg);
     }
 ```
+在以上代码中acquire在内部调用Sync的acquireSharedlnterruptibly方法，后者对中断进行相应。尝试获取信号量资源的AQS的方法tryAcquireShared是由Sync的子类实现的，所以这里分别从两方面来讨论。
+
+```java
+  final int nonfairTryAcquireShared(int acquires) {
+       for (;;) {
+       		//获取当前信号量值
+           int available = getState();
+           //计算当前剩余值
+           int remaining = available - acquires;
+           //如果当前剩余值小于0或者CAS设置成功返回
+           if (remaining < 0 ||
+               compareAndSetState(available, remaining))
+               return remaining;
+       }
+   }
+```
+
+如上代码中先获取当前信号量值（available），然后减去需要获取的值（acquires），得到剩余的信号量个数（remaining），如果剩余值小于0则说明当前信号量个数满足不了需求，那么直接返回负数，这时当前线程会被放入AQS的阻塞队列而被挂起。如果剩余值大于0，则使用CAS操作设置当前信号量为剩余值，然后返回剩余值。
+以上是非公平的逻辑，公平逻辑如下：
+
+```java
+ protected int tryAcquireShared(int acquires) {
+     for (;;) {
+         if (hasQueuedPredecessors())
+             return -1;
+         int available = getState();
+         int remaining = available - acquires;
+         if (remaining < 0 ||
+             compareAndSetState(available, remaining))
+             return remaining;
+     }
+ }
+```
+在公平策略中会通过hasQueuedPredecessors函数去AQS队列中查询是否有头结点的线程，如果有则优先获取。
+
+```java
+- void acquire(int permits)
+
+    public void acquire(int permits) throws InterruptedException {
+        if (permits < 0) throw new IllegalArgumentException();
+        sync.acquireSharedInterruptibly(permits);
+    }
+```
+该方法中与acquire方法不同，acquire只需要获取一个信号量，acquire(int permits)需要获取permits个。
+
+- void acquireUninterruptibly()
+
+该方法与aquire () 似，不同之处在于该方法 对中断不响应，也就是当当前线程调用了 acquireUninterruptibly 获取资源时（包含被阻塞后 ），其他线程调用了当前线程的 interrupt ( ）方法设置了当前线程的中断标志，此时当前线程并不会抛出
+IntrruptException 异常而返回。
+void release()
+
+该方法的作用是把当前Semaphore对象的信号量加1，如果当前有线程调用acquire方法而被阻塞放入AQS阻塞队列中，则会根据公平策略选择一个信号量个数能被满足的线程进行激活，激活的线程会尝试获取刚增加的信号量。
+
+```java
+    public void release() {
+        sync.releaseShared(1);
+    }
+    public final boolean releaseShared(int arg) {
+    	//尝试释放资源
+        if (tryReleaseShared(arg)) {
+        	//资源释放成功则调用park方法唤醒AQS中先挂起的线程
+            doReleaseShared();
+            return true;
+        }
+        return false;
+    }
+        protected final boolean tryReleaseShared(int releases) {
+            for (;;) {
+            	//获取当前信号量
+                int current = getState();
+                //将当前信号量增加release
+                int next = current + releases;
+                if (next < current) // overflow
+                    throw new Error("Maximum permit count exceeded");
+                    //使用CAS保证更新信号量值的原子性
+                if (compareAndSetState(current, next))
+                    return true;
+            }
+        }
+```
+release()->sync.releaseShared(1)可知，release方法每次只对信号量增加1，tryReleaseShared方法是无限循环，使用CAS保证release方法对信号量递增1的原子性操作。tryReleaseShared方法增加信号量值成功后会调用AQS的方法来激活因为调用acquire方法而被阻塞的线程。
 
 **总结：**
 

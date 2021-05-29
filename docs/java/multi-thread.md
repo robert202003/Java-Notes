@@ -12,7 +12,6 @@
   - [synchronized和volatile的区别](#synchronized和volatile的区别)
   - [ReentrantLock实现原理](#ReentrantLock实现原理)
   - [synchronized和ReentrantLock的区别](#synchronized和ReentrantLock的区别)
-- [常见并发类源码分析](#常见并发类源码分析)  
   - [ReentrantReadWriteLock原理](#ReentrantReadWriteLock原理)
   - [ThreadLocal实现原理和内存泄露](#ThreadLocal实现原理和内存泄露)
 - [常见锁的认识](#常见锁的认识)  
@@ -229,6 +228,15 @@ JMM是允许编译器和处理器对指令重排序的，但是规定了as-if-se
 
 ### ReentrantLock实现原理
 
+ReentrantLock是基于AQS实现可重入的独占锁，同时只能有一个线程可以获取该锁，其他获取该锁的线程会被阻塞而放入该锁的AQS阻塞队列里面。根据参数来决定其内部是一个公平锁还是
+非公平锁，默认是非公平锁。ReentrantLock里面的Sync类直接继承AQS，它的子类NonfairSync和FairSync分别实现了获取锁的非公平和公平策略。
+
+在这里，AQS的state状态值表示线程获取该锁的可重入次数，在默认情况下，state的值为0表示当前锁没有被任何线程持有。当一个线程第一次获取该锁时会尝试使用CAS设置state的值为1，如果CAS成功则当前线程获取了该锁，
+然后记录改锁的持有者为当前线程。在该线程没有释放锁的情况下第二次获取该锁后，状态值被设置为2，这就是可重入次数。在该线程释放该锁时，会尝试使用CAS让状态值减1，如果减1后状态值为0，则当前线程释放该锁。
+
+### ReentrantReadWriteLock原理
+
+
 ### synchronized和ReentrantLock的区别
 
 synchronized是和if、else、for、while一样的关键字，ReentrantLock是类，这是二者的本质区别。既然ReentrantLock是类，那么它就提供了比synchronized更多更灵活的特性，可以被继承、可以有方法、可以有各种各样的类变量，ReentrantLock比synchronized的扩展性体现在几点上： 
@@ -237,12 +245,6 @@ synchronized是和if、else、for、while一样的关键字，ReentrantLock是�
 - ReentrantLock可以获取各种锁的信息 
 - ReentrantLock可以灵活地实现多路通知 
 - 另外，二者的锁机制其实也是不一样的:ReentrantLock底层调用的是Unsafe的park方法加锁，synchronized操作的应该是对象头中mark word.
-
-
-
-## 常见并发类源码分析
-
-### ReentrantReadWriteLock原理
 
 ### ThreadLocal实现原理和内存泄露
 
@@ -261,20 +263,31 @@ synchronized是和if、else、for、while一样的关键字，ReentrantLock是�
 
 ### 什么是可重入锁？
 
-待补充......
+一个线程已经获取锁时再次获取锁不会对其自身进行阻塞的锁叫做可重入锁。
 
 ##% 什么是自旋锁？
 
-待补充......
+自旋锁（spinlock）：是指当一个线程在获取锁的时候，如果锁已经被其它线程获取，那么该线程将循环等待，然后不断的判断锁是否能够被成功获取，直到获取到锁才会退出循环。
+
+自旋锁是使用CPU时间缓存线程阻塞与调度的开销。
 
 ### 公平锁和非公平锁的区别
 
-待补充......
+- 公平锁：多个线程按照申请锁的顺序去获得锁，线程会直接进入队列去排队，永远都是队列的第一位才能得到锁。
+
+优点：所有的线程都能得到资源，不会饿死在队列中。
+缺点：吞吐量会下降很多，队列里面除了第一个线程，其他的线程都会阻塞，cpu唤醒阻塞线程的开销会很大。
+
+- 非公平锁：多个线程去获取锁的时候，会直接去尝试获取，获取不到，再去进入等待队列，如果能获取到，就直接获取到锁。
+
+优点：可以减少CPU唤醒线程的开销，整体的吞吐效率会高点，CPU也不必取唤醒所有线程，会减少唤起线程的数量。
+缺点：你们可能也发现了，这样可能导致队列中间的线程一直获取不到锁或者长时间获取不到锁，导致饿死
 
 ### 独占锁和共享锁的区别
 
-待补充......
+- 独占锁也叫排他锁，是指该锁一次只能被一个线程所持有。如果线程T对数据A加上排他锁后，则其他线程不能再对A加任何类型的锁。获得排它锁的线程即能读数据又能修改数据。JDK中的synchronized和 JUC中Lock的实现类就是互斥锁。
 
+- 共享锁是指该锁可被多个线程所持有。如果线程T对数据A加上共享锁后，则其他线程只能对A再加共享锁，不能加排它锁。获得共享锁的线程只能读数据，不能修改数据。 独享锁与共享锁也是通过AQS来实现的，通过实现不同的方法，来实现独享或者共享。
 
 ## CountDownLatch、CyclicBarrier、Semaphore三剑客
 

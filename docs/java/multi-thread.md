@@ -290,11 +290,9 @@ ReentrantLock是基于AQS实现可重入的独占锁，同时只能有一个线�
 ### ThreadPoolExecutor线程池
 
 
-
-
 ## Java并发包中线程同步器
 
-### CountDownLatch原理和使用
+### CountDownLatch原理
 
 **1. 原理**  
 CountDownLatch是使用AQS实现的，使用AQS的状态变量来存放计数器的值。首先在初始化CountDownLatch时设置状态值（计算器值），当多个线程调用countdown
@@ -303,13 +301,63 @@ CountDownLatch是使用AQS实现的，使用AQS的状态变量来存放计数器
 
 **2. 使用**
 
-### CyclicBarrier原理和使用
+### CyclicBarrier原理
 
-待补充......
+CyclicBarrier是回环屏障的意思,它可以让一组线程全部达到一个状态后再全部同时执行。这里之所以叫作回环是因为当所有等待线程执行完毕，并重置CyclicBarrier 的状态后它可以被重用。之所以叫作屏障是因为线程调用await 方法后就会被阻塞，这个阻塞点就称为屏障点，等所有线程都调用了await方法后，线程们就会冲破屏障，继续向下运行。
 
-### Semaphore原理和使用
+**1. 原理**
 
-待补充......
+CyclicBarrier基于独占锁实现,本质底层还是基于AQS的。parties用来记录线程个数，这里表示多少线程调用await后，所有线程才会冲破屏障继续往下运行。而count一开始等于parties,每当有线程调用await方法就递减1,当count为0时就表示所有线程都到了屏障点。
+
+你可能会疑惑，为何维护parties和count两个变量，只使用count不就可以了?另外别忘了CyclieBarrier是可以被复用的，使用两个变量的原因是,parties始终用来记录总的线程个数，当count计数器值变为0后，会将parties的值赋给count,从而进行复用。
+
+还有一个变量barrierCommand也通过构造函数传递，这是一个任务，这个任务的执行时机是当所有线程都到达屏障点后。使用lock首先保证了更新计数器count的原子性。另外使用lock 的条件变量trip支持线程间使用await和signal操作进行同步。
+
+最后，在变量generation内部有一个变量broken，其用来记录当前屏障是否被打破。注意,这里的broken并没有被声明为volatile的,因为是在锁内使用变量,所以不需要声明。
+
+### 信号量Semaphore原理
+
+Semaphore信号量也是Java中的一个同步器，与CountDownLatch和CycleBarrier不同的是它内部的计数器是递增的，并且一开始初始化Semaphore时可以指定一个初始值，但是并不需要知道需要同步的线程个数，而是在需要同步的地方调用acquire方法时指定需要同步的线程个数
+
+**1. 原理**
+
+Semaphore还是使用AQS来实现的。Sync只是对AQS的一个修饰，Sync有两个实现类，用来指定获取信号量时采用的公平策略。
+
+```java
+   public Semaphore(int permits) {
+        sync = new NonfairSync(permits);
+    }
+
+    public Semaphore(int permits, boolean fair) {
+        sync = fair ? new FairSync(permits) : new NonfairSync(permits);
+    }
+```
+如上代码中Semaphore默认采用非公平策略。并且Semaphore的信号量的个数也是通过AQS中的state的值来实现的。
+
+- void acquire()
+
+调用该方法是希望获取一个信号量资源。如果当前信号量个数大于0，则当前信号量个数会减1，然后该方法直接返回。如果当前信号量个数等于0，则当前线程会被放入AQS的阻塞队列中。如果其它线程调用了该线程的interrupt方法时，则会中断该线程然后抛出异常返回。
+
+```java
+    public void acquire() throws InterruptedException {
+    	//传递参数为1，说明要获取一个信号量资源
+        sync.acquireSharedInterruptibly(1);
+    }
+    public final void acquireSharedInterruptibly(int arg)
+            throws InterruptedException {
+            //如果线程被中断则抛出异常
+        if (Thread.interrupted())
+            throw new InterruptedException();
+            //否则调用Sync子类尝试获取。
+        if (tryAcquireShared(arg) < 0)
+        	//如果调用失败则放入阻塞队列，然后再次尝试
+            doAcquireSharedInterruptibly(arg);
+    }
+```
+
+**总结：**
+
+Semaphore的计数器是不可以自动重置的，不过通过变相的改变acquire方法的参数可以实现CycleBarrier的功能。Semaphore也是通过AQS实现的，并且获取信号量是分为公平和非公平策略
 
 ## Java并发包中的阻塞队列
 

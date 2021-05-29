@@ -6,11 +6,11 @@
   - [线程的创建方式](#线程的创建方式)
   - [Java线程具有五种状态](#Java线程具有五种状态)
   - [Java中sleep和wait的区别](#Java中sleep和wait的区别)
-  - [java中的synchronized原理](#synchronized实现原理)  
-  - [java中的volatile理解](#volatile理解)
+  - [Java中的synchronized原理](#synchronized实现原理)  
+  - [Java中的volatile理解](#volatile理解)
   - [synchronized和volatile的区别](#synchronized和volatile的区别)
-  - [java中的CAS操作](#java中的CAS操作)
-  - [java指令重排序](#java指令重排序)
+  - [Java中的CAS操作](#Java中的CAS操作)
+  - [Java指令重排序](#Java指令重排序)
   - [锁的概述](#锁的概述)  
     - [乐观锁和悲观锁区别](#乐观锁和悲观锁区别)
     - [什么是可重入锁](#什么是可重入锁)  
@@ -219,9 +219,9 @@ synchronized是和if、else、for、while一样的关键字，ReentrantLock是�
 - ReentrantLock可以灵活地实现多路通知 
 - 另外，二者的锁机制其实也是不一样的:ReentrantLock底层调用的是Unsafe的park方法加锁，synchronized操作的应该是对象头中mark word.
 
-### java中的CAS操作
+### Java中的CAS操作
 
-### java指令重排序
+### Java指令重排序
 
 
 ## 锁的概述

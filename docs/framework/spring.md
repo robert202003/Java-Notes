@@ -6,8 +6,8 @@
 - [Spring MVC原理](#SpringMVC原理)
 - [Spring的事务传播机制](#Spring的事务传播机制)
 - [Spring事务中的隔离级别有哪几种](#Spring事务中的隔离级别有哪几种)
-- [Spring的注入方式有哪些](#Spring的注入方式有哪些)
-- [Spring的加载方式有哪些](#Spring的加载方式有哪些)
+- [Spring的依赖注入方式有哪些](#Spring的依赖注入方式有哪些)
+- [Spring容器的加载方式有哪些](#Spring容器的加载方式有哪些)
 - [Spring的循环依赖问题，什么时候报异常](#Spring的循环依赖问题，什么时候报异常)
 - [Spring管理事务的方式有几种](#Spring管理事务的方式有几种)
 - [过滤器（filter）和拦截器（Interceptor）的区别](#过滤器（filter）和拦截器（Interceptor）的区别)
@@ -32,6 +32,23 @@ AOP(Aspect-Oriented Programming:面向切面编程)能够将那些与业务无�
 Spring AOP就是基于动态代理的，如果要代理的对象，实现了某个接口，那么Spring AOP会使用JDK Proxy，去创建代理对象，而对于没有实现接口的对象，就无法使用 JDK Proxy 去进行代理了，这时候Spring AOP会使用Cglib ，这时候Spring AOP会使用 Cglib 生成一个被代理对象的子类来作为代理
 
 ## BeanFactory和ApplicationContext的区别？
+
+**getBean()方法**
+
+BeanFactory和ApplicationContext都可以通过调用getBean(“beanName”)获取bean的实例。同样是从Spring IOC容器中获取bean，但是它们提供的工作和功能有所不同。 
+
+BeanFactory和ApplicationContext之间的区别是，前者仅在调用getBean()方法时实例化bean，而ApplicationContext在容器启动时实例化Singleton bean，而不等待getBean被调用。
+
+| 特性  | BeanFactory | ApplicationContext | 
+| :-------- | :------ | :---- | 
+| Bean instantiation/wiring   | Yes   | Yes    | 
+| BeanPostProcessor  |  手动   | 自动   | 
+| BeanFactoryPostProcessor 注册  | 手动   | 自动   | 
+| 国际化实现多语言配置（i18n）    | No   | Yes    | 
+| ApplicationEvent publication  | No   | Yes    | 
+| 实现  | DefaultListableBeanFactory和XmlBeanDefinitionReader   | ClassPath/FileSystem/WebXmlApplicationContext   | 
+| 注解支持  | No   | Yes    | 
+
 
 ## Spring的bean作用范围？
 
@@ -166,9 +183,52 @@ spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记
 
 - TransactionDefinition.ISOLATION_SERIALIZABLE: 最高的隔离级别，完全服从ACID的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，该级别可以防止脏读、不可重复读以及幻读。但是这将严重影响程序的性能。通常情况下也不会用到该级别。
 
-## Spring的注入方式有哪些？
+## Spring的依赖注入方式有哪些？
 
-## Spring的加载方式有哪些？
+- @Autowired：自动装配  基于@Autowired的自动装配，默认是根据类型注入，可以用于构造器、字段、方法注入
+- setter 方法注入
+- 构造器注入
+- 静态工厂的方法注入
+- 实例工厂的方法注入
+
+## Spring容器的加载方式有哪些？
+
+- 类路径获得配置文件（相对路径）
+
+```java
+public static void main(String[] args) {
+        //通过ClassPathXmlApplicationContext加载beans.xml文件，填入的相对路径，默认路径是src
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        //通过context获取user对象
+        User user = (User) context.getBean("user");
+        //打印user
+        System.out.println(user);
+    }
+```
+- 文件系统路径获得配置文件
+
+```java
+public static void main(String[] args) {
+        //通过FileSystemXmlApplicationContext加载beans.xml文件，填入的绝对路径
+        //如果你是windows，直接填入绝对路径，如果是mac，得在绝对路径前加一个斜杠
+        ApplicationContext context = new FileSystemXmlApplicationContext("//Users/hestyle/IdeaProjects/Spring Project 01/src/beans.xml");
+        //通过context获取user对象
+        User user = (User) context.getBean("user");
+        //打印user
+        System.out.println(user);
+    }
+```
+- 使用BeanFactory（不推荐）
+
+```java
+//通过XmlBeanFactory加载beans.xml文件，填入的绝对路径
+        String path = "/Users/hestyle/IdeaProjects/Spring Project 01/src/beans.xml";
+        BeanFactory factory = new XmlBeanFactory(new FileSystemResource(path));
+        //通过context获取user对象
+        User user = (User) factory.getBean("user");
+        //打印user
+        System.out.println(user);
+```
 
 ## Spring的循环依赖问题，什么时候报异常
 

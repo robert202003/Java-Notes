@@ -29,7 +29,7 @@
   - [ThreadLocal实现原理和内存泄露](#ThreadLocal实现原理和内存泄露)
   - [ConcurrentHashMap分析](#ConcurrentHashMap分析)
 - [ThreadPoolExecutor线程池](#ThreadPoolExecutor线程池)  
-  - [ThreadPoolExecutor详解](#ThreadPoolExecutor详解)
+  - [ThreadPoolExecutor线程池详解](#ThreadPoolExecutor线程池详解)
 - [Java并发包中线程同步器](#Java并发包中线程同步器)  
   - [CountDownLatch原理和使用](#CountDownLatch原理和使用)
   - [CyclicBarrier原理和使用](#CyclicBarrier原理和使用)
@@ -287,7 +287,9 @@ ReentrantLock是基于AQS实现可重入的独占锁，同时只能有一个线�
 
 ### ConcurrentHashMap分析
 
-### ThreadPoolExecutor线程池
+## ThreadPoolExecutor线程池
+
+### ThreadPoolExecutor线程池详解
 
 **Executors**
 

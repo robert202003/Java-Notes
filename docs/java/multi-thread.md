@@ -654,7 +654,7 @@ Semaphore的计数器是不可以自动重置的，不过通过变相的改变ac
 
 ### ArrayBlockingQueue原理
 
-待补充......
+ArrayBlockingQueue是数组实现的线程安全的有界的阻塞队列。
 
 ### PriorityBlockingQueue原理
 

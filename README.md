@@ -1,13 +1,9 @@
 # 吊打面试官
 
-| 牛客网试题 | &nbsp;Java&nbsp; | &nbsp;数据库&nbsp; | 常用框架 | &nbsp;微服务开发&nbsp;|&nbsp;消息队列&nbsp;|  设计模式 | &nbsp;编程实战&nbsp; | 
-| :------:| :------: | :------: | :------: | :------: | :------: | :------: | :------: |
-| [:question:](#question-牛客网试题) | [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:hotsprings:](#hotsprings-常用框架) |[:cloud:](#cloud-微服务开发) | [:rabbit:](#rabbit-消息队列) | [:gun:](#gun-设计模式) | [:bear:](#bear-编程实战) |
+| &nbsp;Java&nbsp; | &nbsp;数据库&nbsp; | 常用框架 | &nbsp;微服务开发&nbsp;|&nbsp;消息队列&nbsp;|  设计模式 | &nbsp;编程实战&nbsp; | 
+| :------: | :------: | :------: | :------: | :------: | :------: | :------: |
+| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:hotsprings:](#hotsprings-常用框架) |[:cloud:](#cloud-微服务开发) | [:rabbit:](#rabbit-消息队列) | [:gun:](#gun-设计模式) | [:bear:](#bear-编程实战) |
 <br>
-
-## :question: 牛客网试题
-
-- [100道题分析](https://github.com/robert202003/Java-Notes/blob/master/docs/examination.md)
 
 ## :coffee: Java
 

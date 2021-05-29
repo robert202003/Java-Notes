@@ -1,5 +1,8 @@
 - [JVM内存模型](#JVM内存模型)
 - [类文件结构](#类文件结构)
+
+- [java对象头包含哪些内容](#java对象头包含哪些内容)
+
 - [虚拟机类加载机制](#虚拟机类加载机制)
   - [类加载的时机](#类加载的时机)
   - [类加载过程](#类加载过程)
@@ -10,9 +13,28 @@
 
 ## JVM内存模型
 
+### java对象头包含哪些内容
+
+对象大致可以分为三个部分，分别是对象头、实例变量和填充字节
+
+**对象头（Object header）**
+
+- Mark Word：对象的Mark Word部分占4个字节，其内容是一系列的标记位，比如轻量级的标记位（00），偏向锁标记位（01）等等。
+  用于存储对象自身的运行时数据，如哈希码（HashCode）、GC 分代年龄、锁状态标志、线程持有的锁、偏向线程 ID等。Mark Word
+  被设计成一个非固定的数据结构以便在极小的空间内存储尽量多的信息，它会根据自己的状态复用自己的存储空间。 
+
+- Class对象指针：Class对象指针的大小也是4个字节，其指向的位置是对象对应的Class对象（其对应的元数据对象）的内存地址。
+
+
+**对象实际数据**
+
+- 这里面包括了对象的所有成员变量，其大小由各个成员变量的大小决定，比如：byte和boolean是1个字节，short和char是2个字节，int和float是4个字节，long和double是8个字节，refrence是4个字节。
+
+**对齐填充**
+
+- 最后一部分是对齐填充的字节，按8个字节填充
 
 ## 虚拟机类加载机制
-
 
 ## 什么是双亲委派机制？
 
@@ -28,7 +50,6 @@
 3、 如果 BootStrapClassLoader 加载失败，会使用 ExtClassLoader 来尝试加载；
 
 4、 若 ExtClassLoader 也加载失败，则会使用 AppClassLoader 来加载，如果 AppClassLoader 也加载失败，则会报出异常 ClassNotFoundException。
-
 
 ## 类加载的时机
 
@@ -50,8 +71,6 @@ JVM 中内置了三个重要的 ClassLoader，除了 BootstrapClassLoader 其他
 - BootstrapClassLoader(启动类加载器) ：最顶层的加载类，由C++实现，负责加载 %JAVA_HOME%/lib目录下的jar包和类或者或被 -Xbootclasspath参数指定的路径中的所有类。
 - ExtensionClassLoader(扩展类加载器) ：主要负责加载目录 %JRE_HOME%/lib/ext 目录下的jar包和类，或被 java.ext.dirs 系统变量所指定的路径下的jar包。
 - AppClassLoader(应用程序类加载器) ：面向我们用户的加载器，负责加载当前应用classpath下的所有jar包和类。
-
-
 
 ## 如何查看 JVM 当前使用的是什么垃圾收集器？
 

@@ -7,26 +7,34 @@
   - [Java线程具有五种状态](#Java线程具有五种状态)
   - [Java中sleep和wait的区别](#Java中sleep和wait的区别)
   - [java中的synchronized原理](#synchronized实现原理)  
-  - [java对象头包含哪些内容](#java对象头包含哪些内容)
-  - [volatile理解](#volatile理解)
+  - [java中的volatile理解](#volatile理解)
   - [synchronized和volatile的区别](#synchronized和volatile的区别)
+  - [java中的CAS操作](#java中的CAS操作)
+  - [java指令重排序](#java指令重排序)
+  - [锁的概述](#锁的概述)  
+    - [乐观锁和悲观锁区别](#乐观锁和悲观锁区别)
+    - [什么是可重入锁](#什么是可重入锁)  
+    - [什么是自旋锁](#什么是自旋锁)  
+    - [公平锁和非公平锁的区别](#公平锁和非公平锁的区别)
+    - [独占锁和共享锁的区别](#独占锁和共享锁的区别) 
+- [JUC包下常用类](#JUC包下常用类)     
+  - [ThreadLocalRandom](#ThreadLocalRandom)
+  - [LongAdder](#LongAdder)
+  - [LockSupport工具类](#LockSupport工具类)
+  - [AQS原理](#AQS原理)
   - [ReentrantLock实现原理](#ReentrantLock实现原理)
   - [synchronized和ReentrantLock的区别](#synchronized和ReentrantLock的区别)
-  - [ReentrantReadWriteLock原理](#ReentrantReadWriteLock原理)
+  - [读写锁ReentrantReadWriteLock的原理](#ReentrantReadWriteLock原理)
+  - [StampedLock锁](#StampedLock锁)
   - [ThreadLocal实现原理和内存泄露](#ThreadLocal实现原理和内存泄露)
-- [常见锁的认识](#常见锁的认识)  
-  - [乐观锁和悲观锁区别](#乐观锁和悲观锁区别)
-  - [什么是可重入锁](#什么是可重入锁)  
-  - [什么是自旋锁](#什么是自旋锁)  
-  - [公平锁和非公平锁的区别](#公平锁和非公平锁的区别)
-  - [独占锁和共享锁的区别](#独占锁和共享锁的区别)
+  - [ConcurrentHashMap分析](#ConcurrentHashMap分析)
 - [ThreadPoolExecutor线程池](#ThreadPoolExecutor线程池)  
-  - [ThreadPoolExecutor线程池核心参数和原理](#ThreadPoolExecutor线程池核心参数和原理)  
-- [CountDownLatch、CyclicBarrier、Semaphore三剑客](#CountDownLatch、CyclicBarrier、Semaphore三剑客)  
+  - [ThreadPoolExecutor详解](#ThreadPoolExecutor详解)
+- [Java并发包中线程同步器](#Java并发包中线程同步器)  
   - [CountDownLatch原理和使用](#CountDownLatch原理和使用)
   - [CyclicBarrier原理和使用](#CyclicBarrier原理和使用)
   - [Semaphore原理和使用](#Semaphore原理和使用)
-- [阻塞队列](#阻塞队列)  
+- [Java并发包中的阻塞队列](#阻塞队列)  
   - [ConcurrentLinkedQueue原理](#ConcurrentLinkedQueue原理)
   - [LinkedBlockingQueue原理](#LinkedBlockingQueue原理)
   - [ArrayBlockingQueue原理](#ArrayBlockingQueue原理)
@@ -34,11 +42,7 @@
   - [DelayQueue原理](#DelayQueue原理)
   - [SynchronousQueue](#SynchronousQueue)
   - [LinkedTransferQueue](#LinkedTransferQueue)
-- [AQS 和 CAS原理](#AQS和CAS原理)  
-  - [AQS原理](#AQS底层原理)
-  - [CAS原理](#CAS底层原理)
-  
-  
+
 
 ## 线程基础理解
 
@@ -178,26 +182,6 @@ Synchronized方法同步不再是通过插入monitorentry和monitorexit指令实
 
 但是如果自旋的时间太长也不行，因为自旋是要消耗CPU的，因此自旋的次数是有限制的，比如10次或者100次，如果自旋次数到了线程1还没有释放锁，或者线程1还在执行，线程2还在自旋等待，这时又有一个线程3过来竞争这个锁对象，那么这个时候轻量级锁就会膨胀为重量级锁。重量级锁把除了拥有锁的线程都阻塞，防止CPU空转。
 
-### java对象头包含哪些内容
-
-对象大致可以分为三个部分，分别是对象头、实例变量和填充字节
-
-**对象头（Object header）**
-
-- Mark Word：对象的Mark Word部分占4个字节，其内容是一系列的标记位，比如轻量级的标记位（00），偏向锁标记位（01）等等。
-  用于存储对象自身的运行时数据，如哈希码（HashCode）、GC 分代年龄、锁状态标志、线程持有的锁、偏向线程 ID等。Mark Word
-  被设计成一个非固定的数据结构以便在极小的空间内存储尽量多的信息，它会根据自己的状态复用自己的存储空间。 
-
-- Class对象指针：Class对象指针的大小也是4个字节，其指向的位置是对象对应的Class对象（其对应的元数据对象）的内存地址。
-
-
-**对象实际数据**
-
-- 这里面包括了对象的所有成员变量，其大小由各个成员变量的大小决定，比如：byte和boolean是1个字节，short和char是2个字节，int和float是4个字节，long和double是8个字节，refrence是4个字节。
-
-**对齐填充**
-
-- 最后一部分是对齐填充的字节，按8个字节填充
 
 ## volatile理解
 
@@ -226,17 +210,6 @@ JMM是允许编译器和处理器对指令重排序的，但是规定了as-if-se
 - volatile不会造成线程的阻塞；synchronized可能会造成线程的阻塞。  
 - volatile标记的变量不会被编译器优化；synchronized标记的变量可以被编译器优化。  
 
-### ReentrantLock实现原理
-
-ReentrantLock是基于AQS实现可重入的独占锁，同时只能有一个线程可以获取该锁，其他获取该锁的线程会被阻塞而放入该锁的AQS阻塞队列里面。根据参数来决定其内部是一个公平锁还是
-非公平锁，默认是非公平锁。ReentrantLock里面的Sync类直接继承AQS，它的子类NonfairSync和FairSync分别实现了获取锁的非公平和公平策略。
-
-在这里，AQS的state状态值表示线程获取该锁的可重入次数，在默认情况下，state的值为0表示当前锁没有被任何线程持有。当一个线程第一次获取该锁时会尝试使用CAS设置state的值为1，如果CAS成功则当前线程获取了该锁，
-然后记录改锁的持有者为当前线程。在该线程没有释放锁的情况下第二次获取该锁后，状态值被设置为2，这就是可重入次数。在该线程释放该锁时，会尝试使用CAS让状态值减1，如果减1后状态值为0，则当前线程释放该锁。
-
-### ReentrantReadWriteLock原理
-
-
 ### synchronized和ReentrantLock的区别
 
 synchronized是和if、else、for、while一样的关键字，ReentrantLock是类，这是二者的本质区别。既然ReentrantLock是类，那么它就提供了比synchronized更多更灵活的特性，可以被继承、可以有方法、可以有各种各样的类变量，ReentrantLock比synchronized的扩展性体现在几点上： 
@@ -246,15 +219,12 @@ synchronized是和if、else、for、while一样的关键字，ReentrantLock是�
 - ReentrantLock可以灵活地实现多路通知 
 - 另外，二者的锁机制其实也是不一样的:ReentrantLock底层调用的是Unsafe的park方法加锁，synchronized操作的应该是对象头中mark word.
 
-### ThreadLocal实现原理和内存泄露
+### java中的CAS操作
 
-待补充......
+### java指令重排序
 
-### ThreadLocalRandom原理
 
-待补充......
-
-## 常见锁的认识
+## 锁的概述
 
 ### 乐观锁和悲观锁区别
 
@@ -289,7 +259,40 @@ synchronized是和if、else、for、while一样的关键字，ReentrantLock是�
 
 - 共享锁是指该锁可被多个线程所持有。如果线程T对数据A加上共享锁后，则其他线程只能对A再加共享锁，不能加排它锁。获得共享锁的线程只能读数据，不能修改数据。 独享锁与共享锁也是通过AQS来实现的，通过实现不同的方法，来实现独享或者共享。
 
-## CountDownLatch、CyclicBarrier、Semaphore三剑客
+## JUC包下常用类
+
+### ThreadLocalRandom
+
+### LongAdder
+
+### AQS原理
+
+### ReentrantLock实现原理
+
+### synchronized和ReentrantLock的区别
+
+### ReentrantLock实现原理
+
+ReentrantLock是基于AQS实现可重入的独占锁，同时只能有一个线程可以获取该锁，其他获取该锁的线程会被阻塞而放入该锁的AQS阻塞队列里面。根据参数来决定其内部是一个公平锁还是
+非公平锁，默认是非公平锁。ReentrantLock里面的Sync类直接继承AQS，它的子类NonfairSync和FairSync分别实现了获取锁的非公平和公平策略。
+
+在这里，AQS的state状态值表示线程获取该锁的可重入次数，在默认情况下，state的值为0表示当前锁没有被任何线程持有。当一个线程第一次获取该锁时会尝试使用CAS设置state的值为1，如果CAS成功则当前线程获取了该锁，
+然后记录改锁的持有者为当前线程。在该线程没有释放锁的情况下第二次获取该锁后，状态值被设置为2，这就是可重入次数。在该线程释放该锁时，会尝试使用CAS让状态值减1，如果减1后状态值为0，则当前线程释放该锁。
+
+### ReentrantReadWriteLock的原理
+
+### StampedLock锁
+
+### ThreadLocal实现原理和内存泄露
+
+### ConcurrentHashMap分析
+
+### ThreadPoolExecutor线程池
+
+
+
+
+## Java并发包中线程同步器
 
 ### CountDownLatch原理和使用
 
@@ -308,7 +311,7 @@ CountDownLatch是使用AQS实现的，使用AQS的状态变量来存放计数器
 
 待补充......
 
-## 阻塞队列
+## Java并发包中的阻塞队列
 
 ### ConcurrentLinkedQueue原理
 
@@ -359,13 +362,3 @@ CountDownLatch是使用AQS实现的，使用AQS的状态变量来存放计数器
 
 3）分布式锁
 ……
-
-## AQS 和 CAS原理
- 
-### AQS底层原理
-
-待补充......
-
-### CAS底层原理
-
-待补充......

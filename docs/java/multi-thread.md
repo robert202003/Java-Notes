@@ -29,7 +29,13 @@
   - [ThreadLocal实现原理和内存泄露](#ThreadLocal实现原理和内存泄露)
   - [ConcurrentHashMap分析](#ConcurrentHashMap分析)
 - [ThreadPoolExecutor线程池](#ThreadPoolExecutor线程池)  
-  - [ThreadPoolExecutor线程池详解](#ThreadPoolExecutor线程池详解)
+  - [Executors工具类](#Executors工具类)
+  - [线程池状态含义](#线程池状态含义)
+  - [线程池状态转换](#线程池状态转换)
+  - [线程池参数](#线程池参数)
+    - [拒绝策略](#拒绝策略)
+  - [线程池类型](#线程池类型)
+  - [线程池源码分析](#线程池源码分析)
 - [Java并发包中线程同步器](#Java并发包中线程同步器)  
   - [CountDownLatch原理和使用](#CountDownLatch原理和使用)
   - [CyclicBarrier原理和使用](#CyclicBarrier原理和使用)
@@ -289,9 +295,7 @@ ReentrantLock是基于AQS实现可重入的独占锁，同时只能有一个线�
 
 ## ThreadPoolExecutor线程池
 
-### ThreadPoolExecutor线程池详解
-
-**Executors**
+### Executors工具类
 
 Executors其实是个工具类，里面提供了好多静态方法，根据用户选择返回不同的线程池实例。ThreadPoolExecutor继承了AbstractExecutorService，成员变量ctl是个Integer的原子变量用来记录线程池状态 和 线程池线程个数，类似于ReentrantReadWriteLock使用一个变量存放两种信息。
 
@@ -335,7 +339,7 @@ private static int ctlOf(int rs, int wc) { return rs | wc; }
 
 ```
 
-**线程池状态含义：**
+### 线程池状态含义
 
 - RUNNING：接受新任务并且处理阻塞队列里的任务
 - SHUTDOWN：拒绝新任务但是处理阻塞队列里的任务
@@ -343,7 +347,7 @@ private static int ctlOf(int rs, int wc) { return rs | wc; }
 - TIDYING：所有任务都执行完（包含阻塞队列里面任务）当前线程池活动线程为0，将要调用terminated方法
 - TERMINATED：终止状态。terminated方法调用完成以后的状态
 
-**线程池状态转换：**
+### 线程池状态转换
 
 - RUNNING -> SHUTDOWN 显式调用shutdown()方法，或者隐式调用了finalize(),它里面调用了shutdown（）方法。
 - RUNNING or SHUTDOWN)-> STOP 显式 shutdownNow()方法
@@ -351,7 +355,7 @@ private static int ctlOf(int rs, int wc) { return rs | wc; }
 - STOP -> TIDYING 当线程池为空的时候
 - TIDYING -> TERMINATED 当 terminated() hook 方法执行完成时候
 
-**线程池参数**
+### 线程池参数
 
 - corePoolSize：线程池核心线程个数
 
@@ -367,7 +371,79 @@ private static int ctlOf(int rs, int wc) { return rs | wc; }
 
 - TimeUnit，存活时间的时间单位。
 
-**线程池类型：**
+#### 拒绝策略
+
+**ThreadPoolExecutor.AbortPolicy**
+
+该策略是线程池的默认策略。使用该策略时，如果线程池队列满了丢掉这个任务并且抛出RejectedExecutionException异常。
+
+```java
+public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+            //不做任何处理，直接抛出异常
+            throw new RejectedExecutionException("Task " + r.toString() +
+                                                 " rejected from " +
+                                                 e.toString());
+}
+```
+
+**ThreadPoolExecutor.DiscardPolicy**
+
+这个策略和AbortPolicy的slient版本，如果线程池队列满了，会直接丢掉这个任务并且不会有任何异常。
+
+```java
+public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+        	//就是一个空的方法
+}
+```
+
+**ThreadPoolExecutor.DiscardOldestPolicy**
+
+丢弃最老的。也就是说如果队列满了，会将最早进入队列的任务删掉腾出空间，再尝试加入队列。因为队列是队尾进，队头出，所以队头元素是最老的，因此每次都是移除对头元素后再尝试入队。
+
+```java
+ public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+            if (!e.isShutdown()) {
+            	//移除队头元素
+                e.getQueue().poll();
+                //再尝试入队
+                e.execute(r);
+            }
+}
+```
+
+**ThreadPoolExecutor.CallerRunsPolicy**
+
+如果添加到线程池失败，那么主线程会自己去执行该任务，不会等待线程池中的线程去执行
+
+```java
+public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+            if (!e.isShutdown()) {
+                //直接执行run方法
+                r.run();
+            }
+}
+```
+
+**自定义**
+
+如果以上策略都不符合业务场景，那么可以自己定义一个拒绝策略，只要实现RejectedExecutionHandler接口，并且实现rejectedExecution方法就可以了。
+
+例如：我定义了我的一个拒绝策略，叫做MyRejectPolicy，里面的逻辑就是打印处理被拒绝的任务内容
+
+```java
+public class MyRejectPolicy implements RejectedExecutionHandler{
+    public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+        //Sender是我的Runnable类，里面有message字段
+        if (r instanceof Sender) {
+            Sender sender = (Sender) r;
+            //直接打印
+            System.out.println(sender.getMessage());
+        }
+    }
+}
+```
+
+### 线程池类型
 
 - newFixedThreadPool
 
@@ -449,7 +525,7 @@ public static ExecutorService newFixedThreadPool(int nThreads, ThreadFactory thr
    }
 ```
 
-**源码分析**
+### 线程池源码分析
 
 添加任务到线程池exectue方法
 

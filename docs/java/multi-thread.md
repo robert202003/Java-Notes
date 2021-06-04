@@ -768,7 +768,7 @@ Semaphore的计数器是不可以自动重置的，不过通过变相的改变ac
 
 ### ConcurrentLinkedQueue原理
 
-待补充......
+ConcurrentLinkedQueue是基于链接节点的无界线程安全队列
 
 ### LinkedBlockingQueue原理
 

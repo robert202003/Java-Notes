@@ -1,13 +1,14 @@
 - [线程基础](#线程基础理解)
   - [进程和线程的区别](#进程和线程的区别)
   - [什么是上下文切换](#什么是上下文切换)
+  - [如何减少上下文切换](#如何减少上下文切换)
   - [什么是线程死锁](#什么是线程死锁)
   - [如何预防线程死锁](#如何预防线程死锁)
   - [线程的创建方式](#线程的创建方式)
-  - [Java线程具有五种状态](#Java线程具有五种状态)
+  - [Java线程具有六种状态](#Java线程具有六种状态)
   - [Java中sleep和wait的区别](#Java中sleep和wait的区别)
   - [Java中的synchronized原理](#synchronized实现原理)  
-  - [Java中的volatile理解](#volatile理解)
+  - [Java中的volatile原理](#Java中的volatile原理)
   - [synchronized和volatile的区别](#synchronized和volatile的区别)
   - [Java中的CAS操作](#Java中的CAS操作)
   - [Java指令重排序](#Java指令重排序)
@@ -53,7 +54,9 @@
 ## 线程基础理解
 
 ### 进程和线程的区别
+
 - 进程是代码在数据集合上的一次运行活动，是系统进行资源分配和调度的基本单元。
+
 - 线程则是进程的执行路径，一个进程至少有一个线程，线程是CPU分配的基本单元。
 
 ### 什么是上下文切换?
@@ -65,6 +68,18 @@
 上下文切换通常是计算密集型的。也就是说，它需要相当可观的处理器时间，在每秒几十上百次的切换中，每次切换都需要纳秒量级的时间。所以，上下文切换对系统来说意味着消耗大量的 CPU 时间，事实上，可能是操作系统中时间消耗最大的操作。
 
 Linux 相比与其他操作系统（包括其他类 Unix 系统）有很多的优点，其中有一项就是，其上下文切换和模式切换的时间消耗非常少。
+
+### 如何减少上下文切换
+
+减少上下文切换的方法有无锁并发编程、CAS算法、使用最少线程和使用协程。
+
+ 1. 无锁并发并发编程。多线程竞争锁时，会引起上下文切换，所以多线程处理数据时，可以用一些办法来避免使用锁，如将数据的ID按照Hash算法取模分段，不同的线程处理不同段的数据。
+
+ 2. CAS算法。Java的Atomic包使用CAS算法来更新数据，而不需要加锁。
+
+ 3. 使用最少线程。避免创建不需要的线程，比如任务很少，但是创建了很多线程来处理，这样会造成大量线程都处于等待状态。
+
+ 4.协程：在单线程里实现多任务的调度，并在单线程里维持多个任务间的切换。
 
 ### 什么是线程死锁？
 
@@ -102,7 +117,7 @@ Linux 相比与其他操作系统（包括其他类 Unix 系统）有很多的�
 - 实现runnable接口
 - 实现callable接口，有返回值
 
-### Java线程具有五种状态
+### Java线程具有六种状态
 
 **1. 新建状态（New）**  
 当线程对象对创建后，即进入了新建状态，如：Thread t = new MyThread()。
@@ -134,14 +149,20 @@ Linux 相比与其他操作系统（包括其他类 Unix 系统）有很多的�
 ### synchronized实现原理
 
 **1. 作用**  
+
 原子性：确保线程互斥的访问同步代码；
+
 可见性：保证共享变量的修改能够及时可见，其实是通过Java内存模型中的 “对一个变量unlock操作之前，必须要同步到主内存中；如果对一个变量进行lock操作，则将会清空工作内存中此变量的值，在执行引擎使用此变量前，需要重新从主内存中load操作或assign操作初始化变量值” 来保证的；
+
 有序性：有效解决重排序问题，即 “一个unlock操作先行发生(happen-before)于后面对同一个锁的lock操作”；
 
 **2. 三种用法** 
+
 当synchronized作用在实例方法时，监视器锁（monitor）便是对象实例（this）；
+
 当synchronized作用在静态方法时，监视器锁（monitor）便是对象的Class实例，因为Class数据存在于永久代，因此静态方法锁相当于该类的一个全局锁；
-当synchronized作用在某一个对象实例时，监视器锁（monitor）便是括号括起来的对象实例；
+
+当synchronized作用在同步代码块时，监视器锁（monitor）便是括号括起来的对象实例；
 
 **3. 实现原理**  
  
@@ -158,7 +179,7 @@ Synchronized方法同步不再是通过插入monitorentry和monitorexit指令实
 
 锁的4中状态：无锁状态、偏向锁状态、轻量级锁状态、重量级锁状态（级别从低到高）
 
-1）偏向锁：
+（1）偏向锁：
 
 为什么要引入偏向锁？
 
@@ -166,7 +187,13 @@ Synchronized方法同步不再是通过插入monitorentry和monitorexit指令实
 
 偏向锁的升级
 
-当线程1访问代码块并获取锁对象时，会在java对象头和栈帧中记录偏向的锁的threadID，因为偏向锁不会主动释放锁，因此以后线程1再次获取锁的时候，需要比较当前线程的threadID和Java对象头中的threadID是否一致，如果一致（还是线程1获取锁对象），则无需使用CAS来加锁、解锁；如果不一致（其他线程，如线程2要竞争锁对象，而偏向锁不会主动释放因此还是存储的线程1的threadID），那么需要查看Java对象头中记录的线程1是否存活，如果没有存活，那么锁对象被重置为无锁状态，其它线程（线程2）可以竞争将其设置为偏向锁；如果存活，那么立刻查找该线程（线程1）的栈帧信息，如果还是需要继续持有这个锁对象，那么暂停当前线程1，撤销偏向锁，升级为轻量级锁，如果线程1 不再使用该锁对象，那么将锁对象状态设为无锁状态，重新偏向新的线程。
+当线程1访问代码块并获取锁对象时，会在java对象头和栈帧中记录偏向的锁的threadID，因为偏向锁不会主动释放锁，因此以后线程1再次获取锁的时候，需要比较当前线程的threadID和Java对象头中的threadID是否一致，
+
+如果一致（还是线程1获取锁对象），则无需使用CAS来加锁、解锁；如果不一致（其他线程，如线程2要竞争锁对象，而偏向锁不会主动释放因此还是存储的线程1的threadID），那么需要查看Java对象头中记录的线程1是否存活，
+
+如果没有存活，那么锁对象被重置为无锁状态，其它线程（线程2）可以竞争将其设置为偏向锁；如果存活，那么立刻查找该线程（线程1）的栈帧信息，如果还是需要继续持有这个锁对象，那么暂停当前线程1，撤销偏向锁，升级为轻量级锁，
+
+如果线程1 不再使用该锁对象，那么将锁对象状态设为无锁状态，重新偏向新的线程。
 
 偏向锁的取消：
 
@@ -188,31 +215,30 @@ Synchronized方法同步不再是通过插入monitorentry和monitorexit指令实
 
 但是如果自旋的时间太长也不行，因为自旋是要消耗CPU的，因此自旋的次数是有限制的，比如10次或者100次，如果自旋次数到了线程1还没有释放锁，或者线程1还在执行，线程2还在自旋等待，这时又有一个线程3过来竞争这个锁对象，那么这个时候轻量级锁就会膨胀为重量级锁。重量级锁把除了拥有锁的线程都阻塞，防止CPU空转。
 
+## Java中的volatile原理
 
-## volatile理解
+**保证内存可见性**
 
-1）保证内存可见性
+当对volatile变量执行写操作后，JMM会把工作内存中的最新变量值强制刷新到主内存写操作会导致其他线程中的缓存无效这样，其他线程使用缓存时，发现本地工作内存中此变量无效，便从主内存中获取，这样获取到的变量便是最新的值，实现了线程的可见性
 
-通俗来说就是，线程A对一个volatile变量的修改，对于其它线程来说是可见的，即线程每次获取volatile变量的值都是最新的。
+**禁止指令重排序**
 
-当一个变量被 volatile 修饰时，任何线程对它的写操作都会立即刷新到主内存中，并且会强制让缓存了该变量的线程中的数据清空，必须从主内存重新读取最新数据。
+volatile是通过编译器在生成字节码时，在指令序列中添加“内存屏障”来禁止指令重排序的。
 
-2）禁止指令重排序
-禁止指令重排序的原因：
-JMM是允许编译器和处理器对指令重排序的，但是规定了as-if-serial语义，程序的执行结果不能改变
-
-说明：volatile并不能保证原子性
+volatile并不能保证原子性
 
 ### synchronized和volatile的区别？
 
 一旦一个共享变量（类的成员变量、类的静态成员变量）被volatile修饰之后，那么就具备了两层语义：   
+
 1.保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的。  
+
 2.禁止进行指令重排序。    
    volatile本质是在告诉jvm当前变量在寄存器（工作内存）中的值是不确定的，需要从主存中读取；  
    synchronized则是锁定当前变量，只有当前线程可以访问该变量，其他线程被阻塞住。  
 
 - volatile仅能使用在变量级别；synchronized则可以使用在变量、方法、和类级别的。  
-- volatile仅能实现变量的修改可见性，并不能保证原子性；synchronized则可以保证变量的修改可见性和原子性。  
+- volatile仅能实现变量的修改可见性，并不能保证原子性；synchronized则可以保证变量的修改可见性和原子性，但synchronized 不能防止指令重排序 。  
 - volatile不会造成线程的阻塞；synchronized可能会造成线程的阻塞。  
 - volatile标记的变量不会被编译器优化；synchronized标记的变量可以被编译器优化。  
 
@@ -226,6 +252,26 @@ synchronized是和if、else、for、while一样的关键字，ReentrantLock是�
 - 另外，二者的锁机制其实也是不一样的:ReentrantLock底层调用的是Unsafe的park方法加锁，synchronized操作的应该是对象头中mark word.
 
 ### Java中的CAS操作
+
+CAS（Compare and Swap），JDK提供的非阻塞原子性操作，通过硬件保证了比较-更新操作的原子性。JDK里面的Unsafe类提供了一系列compareAndSwap*方法
+
+```java
+public final native boolean compareAndSwapObject(Object var1, long var2, Object var4, Object var5);
+
+public final native boolean compareAndSwapInt(Object var1, long var2, int var4, int var5);
+
+public final native boolean compareAndSwapLong(Object var1, long var2, long var4, long var6);
+
+```
+CAS有四个操作数，分别为：对象内存位置、对象中的变量的偏移量、变量预期值和新的值。
+
+**ABA问题**
+
+线程1首先获取变量X的值为A，然后使用CAS操作修改为B。在执行CAS之前，线程2修改了X的值为B，又改为A。所以线程1执行CAS时X的值为A，但这个A以及不是线程1获取时的A了。
+
+ABA问题的产生是因为变量的状态值发生了环形转换，A -> B -> A。如果变量的值只能朝着一个方向转换，A -> B -> C，不能构成环形，就不会存在问题。
+
+JDK中的AtomicStampedReference类给每个变量的状态值都配备了一个时间戳，从而避免了ABA问题。
 
 ### Java指令重排序
 
@@ -730,15 +776,37 @@ Semaphore的计数器是不可以自动重置的，不过通过变相的改变ac
 
 ### ArrayBlockingQueue原理
 
-ArrayBlockingQueue是数组实现的线程安全的有界的阻塞队列。
+ArrayBlockingQueue是数组实现的线程安全的有界的阻塞队列。 
+
+线程安全是指，ArrayBlockingQueue内部通过“互斥锁”保护竞争资源，实现了多线程对竞争资源的互斥访问。而有界，则是指ArrayBlockingQueue对应的数组是有界限的。 
+阻塞队列，是指多线程访问竞争资源时，当竞争资源已被某线程获取时，其它要获取该资源的线程需要阻塞等待；
+ArrayBlockingQueue是按 FIFO（先进先出）原则对元素进行排序，元素都是从尾部插入到队列，从头部开始返回。
 
 ### PriorityBlockingQueue原理
 
-待补充......
+PriorityBlockingQueue是一个支持优先级的无界阻塞队列。
+
+默认情况下PriorityBlockingQueue队列元素采取自然顺序升序排列。也可以自定义类实现compareTo()方法来指定元素排序规则，或者在初始化时，可以指定构造参数Comparator来对元素进行排序。
+
+注意：PriorityBlockingQueue不能保证相同优先级元素的顺序(即两个值排序一样时，不保证顺序)。
+
+PriorityBlockingQueue提供了4个构造器：
+
+PriorityBlockingQueue()：
+初始化一个默认大小(11)长度的队列，并使用默认自然排序。
+
+PriorityBlockingQueue(int)：
+初始化一个指定大小的长度的队列,并使用默认自然排序。
+
+PriorityBlockingQueue(int,Comparator)：
+初始化一个指定大小的队列，并按照指定比较器进行排序。
+
+PriorityBlockingQueue(Collection)：
+根据传入的集合进行初始化并堆化，如果当前集合是SortedSet或者PriorityBlockingQueue类型，则保持原有顺序，否则使用自然排序进行堆化。
 
 ### DelayQueue原理
 
-待补充......
+DelayQueue是一个无界阻塞延迟队列，只有在延迟期满时才能从中提取元素。该队列的头部是延迟期满后保存时间最长的Delayed 元素。
 
 ### SynchronousQueue
 
@@ -746,18 +814,18 @@ ArrayBlockingQueue是数组实现的线程安全的有界的阻塞队列。
 
 ### LinkedTransferQueue
 
-待补充......
+LinkedTransferQueue是一个由链表结构组成的无界阻塞TransferQueue队列。相对于其他阻塞队列，LinkedTransferQueue多了tryTransfer和transfer方法
 
 ### LinkedBlockingDeque
 
-待补充......
-
+LinkedBlockingDeque是一个由链表结构组成的双向无界阻塞队列，即可以从队列的两端插入和移除元素
 
 ### CompletableFuture使用
 
 ### 如何实现接口的幂等性
 
 1）乐观锁
+
 这种方法适合在更新的场景中，update t_goods set count = count -1 , version = version + 1 where good_id=2 and version = 1
 根据version版本，也就是在操作库存前先获取当前商品的version版本号，然后操作的时候带上此version号。我们梳理下，我们第一次操作库存时，得到version为1，调用库存服务version变成了2；但返回给订单服务出现了问题，订单服务又一次发起调用库存服务，当订单服务传如的version还是1，再执行上面的sql语句时，就不会执行；因为version已经变为2了，where条件就不成立。这样就保证了不管调用几次，只会真正的处理一次。
 乐观锁主要使用于处理读多写少的问题这种方法适合在更新的场景中，update t_goods set count = count -1 , version = version + 1 where good_id=2 and version = 1
@@ -765,7 +833,9 @@ ArrayBlockingQueue是数组实现的线程安全的有界的阻塞队列。
 乐观锁主要使用于处理读多写少的问题
 
 2）唯一主键
+
 这个机制是利用了数据库的主键唯一约束的特性，解决了在insert场景时幂等问题。但主键的要求不是自增的主键，这样就需要业务生成全局唯一的主键。
 
 3）分布式锁
-……
+
+4）Token + Redis实现

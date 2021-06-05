@@ -10,6 +10,7 @@
   - [Object类中的notify方法](#Object类中的notify方法)
   - [Java中sleep和wait的区别](#Java中sleep和wait的区别)
   - [Java中的synchronized原理](#synchronized实现原理)  
+  - [synchronized锁升级过程](#synchronized锁升级过程)  
   - [Java中的volatile原理](#Java中的volatile原理)
   - [synchronized和volatile的区别](#synchronized和volatile的区别)
   - [Java中的CAS操作](#Java中的CAS操作)
@@ -215,28 +216,52 @@ Linux 相比与其他操作系统（包括其他类 Unix 系统）有很多的�
 
 **3. 实现原理**  
  
-修饰代码块：
+- **synchronized修饰代码块：**
 
-monitorenter：每个对象都是一个监视器锁（monitor）。当monitor被占用时就会处于锁定状态，线程执行monitorenter指令时尝试获取monitor的所有权，过程如下：
+```java
+public void method() {
+        synchronized (this) {
+            System.out.println("synchronized 代码块");
+        }
+}
+```
 
-修饰方法：
+synchronized 同步代码块的实现使用的是 monitorenter 和 monitorexit 指令，其中 monitorenter 指令指向同步代码块的开始位置，monitorexit 指令则指明同步代码块的结束位置。
 
-Synchronized方法同步不再是通过插入monitorentry和monitorexit指令实现，而是由方法调用指令来读取运行时常量池中的ACC_SYNCHRONIZED标志隐式实现的，如果方法表结构（method_info Structure）中的ACC_SYNCHRONIZED标志被设置，
+当执行 monitorenter 指令时，线程试图获取锁也就是获取 对象监视器 monitor 的持有权。
+
+在执行monitorenter时，会尝试获取对象的锁，如果锁的计数器为 0 则表示锁可以被获取，获取后将锁计数器设为 1 也就是加 1。
+
+在执行 monitorexit 指令后，将锁计数器设为 0，表明锁被释放。如果获取对象锁失败，那当前线程就要阻塞等待，直到锁被另外一个线程释放为止。
+
+在 Java 虚拟机(HotSpot)中，Monitor 是基于 C++实现的，由ObjectMonitor实现的。每个对象中都内置了一个 ObjectMonitor对象。
+
+另外，wait/notify等方法也依赖于monitor对象，这就是为什么只有在同步的块或者方法中才能调用wait/notify等方法，否则会抛出java.lang.IllegalMonitorStateException的异常的原因。
+
+- **synchronized修饰方法**
+
+```java
+ public synchronized void method() {
+        System.out.println("synchronized 方法");
+}
+```
+
+synchronized方法同步不再是通过插入monitorentry和monitorexit指令实现，而是由方法调用指令来读取运行时常量池中的ACC_SYNCHRONIZED标志隐式实现的，如果方法表结构（method_info Structure）中的ACC_SYNCHRONIZED标志被设置，
 那么线程在执行方法前会先去获取对象的monitor对象，如果获取成功则执行方法代码，执行完毕后释放monitor对象，如果monitor对象已经被其它线程获取，那么当前线程被阻塞。
 
-**4. 锁升级过程** 
+### synchronized锁升级过程
 
-锁的4中状态：无锁状态、偏向锁状态、轻量级锁状态、重量级锁状态（级别从低到高）
+在Java Se1.6中，锁的4中状态：无锁状态、偏向锁状态、轻量级锁状态、重量级锁状态（级别从低到高）。
 
-（1）偏向锁：
+**1. 偏向锁**
 
 为什么要引入偏向锁？
 
 因为经过HotSpot的作者大量的研究发现，大多数时候是不存在锁竞争的，常常是一个线程多次获得同一个锁，因此如果每次都要竞争锁会增大很多没有必要付出的代价，为了降低获取锁的代价，才引入的偏向锁。
 
-偏向锁的升级
+（1）偏向锁的升级
 
-当线程1访问代码块并获取锁对象时，会在java对象头和栈帧中记录偏向的锁的threadID，因为偏向锁不会主动释放锁，因此以后线程1再次获取锁的时候，需要比较当前线程的threadID和Java对象头中的threadID是否一致，
+当线程1访问同步代码块并获取锁对象时，会在java对象头和栈帧中记录偏向的锁的threadID，因为偏向锁不会主动释放锁，因此以后线程1再次获取锁的时候，需要比较当前线程的threadID和Java对象头中的threadID是否一致，
 
 如果一致（还是线程1获取锁对象），则无需使用CAS来加锁、解锁；如果不一致（其他线程，如线程2要竞争锁对象，而偏向锁不会主动释放因此还是存储的线程1的threadID），那么需要查看Java对象头中记录的线程1是否存活，
 
@@ -244,13 +269,13 @@ Synchronized方法同步不再是通过插入monitorentry和monitorexit指令实
 
 如果线程1 不再使用该锁对象，那么将锁对象状态设为无锁状态，重新偏向新的线程。
 
-偏向锁的取消：
+（2）偏向锁的取消
 
 偏向锁是默认开启的，而且开始时间一般是比应用程序启动慢几秒，如果不想有这个延迟，那么可以使用-XX:BiasedLockingStartUpDelay=0；
 
 如果不想要偏向锁，那么可以通过-XX:-UseBiasedLocking = false来设置；
 
-（2）轻量级锁
+**2. 轻量级锁自旋锁）**
 
 为什么要引入轻量级锁？
 
@@ -263,6 +288,12 @@ Synchronized方法同步不再是通过插入monitorentry和monitorexit指令实
 如果在线程1复制对象头的同时（在线程1CAS之前），线程2也准备获取锁，复制了对象头到线程2的锁记录空间中，但是在线程2CAS的时候，发现线程1已经把对象头换了，线程2的CAS失败，那么线程2就尝试使用自旋锁来等待线程1释放锁。
 
 但是如果自旋的时间太长也不行，因为自旋是要消耗CPU的，因此自旋的次数是有限制的，比如10次或者100次，如果自旋次数到了线程1还没有释放锁，或者线程1还在执行，线程2还在自旋等待，这时又有一个线程3过来竞争这个锁对象，那么这个时候轻量级锁就会膨胀为重量级锁。重量级锁把除了拥有锁的线程都阻塞，防止CPU空转。
+
+**3. 重量级锁**
+
+当一个锁被两条或两条以上的线程竞争的时候，这时候轻量级锁就会演变成重量级锁。
+
+重量级锁也就是通常说synchronized的对象锁，锁标识位为10，其中指针指向的是monitor对象（也称为管程或监视器锁）的起始地址。每个对象都存在着一个 monitor 与之关联，对象与其 monitor 之间的关系有存在多种实现方式，如monitor可以与对象一起创建销毁或当线程试图获取对象锁时自动生成，但当一个 monitor 被某个线程持有后，它便处于锁定状态。
 
 ## Java中的volatile原理
 

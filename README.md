@@ -7,8 +7,8 @@
 
 ## :books: 数据结构与算法
 
-- [数据结构](https://github.com/robert202003/Java-Notes/blob/master/docs/java/datastructure.md)
-- [算法](https://github.com/robert202003/Java-Notes/blob/master/docs/java/algorithm.md)
+- [数据结构](https://github.com/robert202003/Java-Notes/blob/master/docs/datastructure-algorithm/datastructure.md)
+- [算法](https://github.com/robert202003/Java-Notes/blob/master/docs/datastructure-algorithm/algorithm.md)
 
 ## :coffee: Java
 

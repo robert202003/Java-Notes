@@ -28,7 +28,7 @@
   - [AQS原理](#AQS原理)
   - [ReentrantLock实现原理](#ReentrantLock实现原理)
   - [synchronized和ReentrantLock的区别](#synchronized和ReentrantLock的区别)
-  - [读写锁ReentrantReadWriteLock的原理](#ReentrantReadWriteLock原理)
+  - [ReentrantReadWriteLock的原理](#ReentrantReadWriteLock原理)
   - [StampedLock锁](#StampedLock锁)
   - [ThreadLocal实现原理和内存泄露](#ThreadLocal实现原理和内存泄露)
   - [ConcurrentHashMap分析](#ConcurrentHashMap分析)
@@ -330,15 +330,6 @@ volatile本质是在告诉jvm当前变量在寄存器（工作内存）中的值
 - volatile不会造成线程的阻塞；synchronized可能会造成线程的阻塞。  
 - volatile标记的变量不会被编译器优化；synchronized标记的变量可以被编译器优化。  
 
-### synchronized和ReentrantLock的区别
-
-- synchronized 是依赖于 JVM 实现的，ReentrantLock 是 JDK 的 API 层面；
-- ReentrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁；
-- synchronized 不需要用户去手动释放锁，synchronized 代码执行完后系统会自动让线程释放对锁的占用； ReentrantLock则需要用户去手动释放锁，如果没有手动释放锁，就可能导致死锁现象；
-- ReentrantLock提供了一种能够中断等待锁的线程的机制，通过 lock.lockInterruptibly() 来实现这个机制，synchronized不可中断；
-- 一个ReentrantLock可以绑定多个Condition对象，仅需多次调用new Condition()即可；而在synchronized中锁锁对象的wait()、notify()/notifyAll()可以实现一个隐含的条件，如果要和多余的条件关联，就不得不额外的增加一个锁
-
-
 ### Java中的CAS操作
 
 CAS（Compare and Swap），JDK提供的非阻塞原子性操作，通过硬件保证了比较-更新操作的原子性。JDK里面的Unsafe类提供了一系列compareAndSwap*方法
@@ -362,7 +353,6 @@ ABA问题的产生是因为变量的状态值发生了环形转换，A -> B -> A
 JDK中的AtomicStampedReference类给每个变量的状态值都配备了一个时间戳，从而避免了ABA问题。
 
 ### Java指令重排序
-
 
 ## 锁的概述
 
@@ -409,15 +399,24 @@ JDK中的AtomicStampedReference类给每个变量的状态值都配备了一个�
 
 ### ReentrantLock实现原理
 
+ReentrantLock是基于AQS实现可重入的独占锁，同时只能有一个线程可以获取该锁，其他获取该锁的线程会被阻塞而放入该锁的AQS阻塞队列里面。根据参数来决定其内部是一个公平锁还是非公平锁，默认是非公平锁。
+ReentrantLock里面的Sync类直接继承AQS，它的子类NonfairSync和FairSync分别实现了获取锁的非公平和公平策略。
+
+在这里，AQS的state状态值表示线程获取该锁的可重入次数，在默认情况下，state的值为0表示当前锁没有被任何线程持有。当一个线程第一次获取该锁时会尝试使用CAS设置state的值为1，如果CAS成功则当前线程
+
+获取了该锁，然后记录改锁的持有者为当前线程。在该线程没有释放锁的情况下第二次获取该锁后，状态值被设置为2，这就是可重入次数。在该线程释放该锁时，会尝试使用CAS让状态值减1，如果减1后状态值为0，
+
+则当前线程释放该锁。
+
+**1. 获取锁**
+
 ### synchronized和ReentrantLock的区别
 
-### ReentrantLock实现原理
-
-ReentrantLock是基于AQS实现可重入的独占锁，同时只能有一个线程可以获取该锁，其他获取该锁的线程会被阻塞而放入该锁的AQS阻塞队列里面。根据参数来决定其内部是一个公平锁还是
-非公平锁，默认是非公平锁。ReentrantLock里面的Sync类直接继承AQS，它的子类NonfairSync和FairSync分别实现了获取锁的非公平和公平策略。
-
-在这里，AQS的state状态值表示线程获取该锁的可重入次数，在默认情况下，state的值为0表示当前锁没有被任何线程持有。当一个线程第一次获取该锁时会尝试使用CAS设置state的值为1，如果CAS成功则当前线程获取了该锁，
-然后记录改锁的持有者为当前线程。在该线程没有释放锁的情况下第二次获取该锁后，状态值被设置为2，这就是可重入次数。在该线程释放该锁时，会尝试使用CAS让状态值减1，如果减1后状态值为0，则当前线程释放该锁。
+- synchronized 是依赖于 JVM 实现的，ReentrantLock 是 JDK 的 API 层面；
+- ReentrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁；
+- synchronized 不需要用户去手动释放锁，synchronized 代码执行完后系统会自动让线程释放对锁的占用； ReentrantLock则需要用户去手动释放锁，如果没有手动释放锁，就可能导致死锁现象；
+- ReentrantLock提供了一种能够中断等待锁的线程的机制，通过 lock.lockInterruptibly() 来实现这个机制，synchronized不可中断；
+- 一个ReentrantLock可以绑定多个Condition对象，仅需多次调用new Condition()即可；而在synchronized中锁锁对象的wait()、notify()/notifyAll()可以实现一个隐含的条件，如果要和多余的条件关联，就不得不额外的增加一个锁
 
 ### ReentrantReadWriteLock的原理
 

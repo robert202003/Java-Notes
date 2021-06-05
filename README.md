@@ -4,7 +4,7 @@
 </div>
 <br>
 
-![](images/index.jpg)
+![](./images/index.jpg)
 
 <br>
 

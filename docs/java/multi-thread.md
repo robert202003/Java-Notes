@@ -27,6 +27,8 @@
   - [LockSupport工具类](#LockSupport工具类)
   - [AQS原理](#AQS原理)
   - [ReentrantLock实现原理](#ReentrantLock实现原理)
+     - [获取锁](#获取锁)
+     - [释放锁](#释放锁)
   - [synchronized和ReentrantLock的区别](#synchronized和ReentrantLock的区别)
   - [ReentrantReadWriteLock的原理](#ReentrantReadWriteLock原理)
   - [StampedLock锁](#StampedLock锁)
@@ -431,9 +433,9 @@ ReentrantLock里面的Sync类直接继承AQS，它的子类NonfairSync和FairSyn
 获取了该锁，然后记录改锁的持有者为当前线程。在该线程没有释放锁的情况下第二次获取该锁后，状态值被设置为2，这就是可重入次数。在该线程释放该锁时，会尝试使用CAS让状态值减1，如果减1后状态值为0，则当
 前线程释放该锁。
 
-**1. 获取锁**
+#### 获取锁
 
-void lock()
+**1. void lock()**
 
 当一个线程调用该方法时，说明该线程希望获取该锁。如果该锁当前没有被其他线程占用，并且当前线程之前没有获取过该锁，则当前线程会获取到该锁，然后设置当前锁的拥有者为当前线程，并设置AQS的状态值为1，
 然后直接返回。如果当前线程之前已经获取过该锁，则这次只是简单地把AQS的状态值加1后返回。如果该锁已经被其他线程持有，则调用该方法的线程会被放入AQS阻塞队列后挂起。
@@ -669,6 +671,48 @@ private boolean doAcquireNanos(int arg, long nanosTimeout)
         if (failed)
             cancelAcquire(node);
     }
+}
+```
+
+#### 释放锁
+
+**1. unlock()**
+
+尝试释放锁，如果当前线程持有锁，则调用该方法让该线程AQS对state减1，如果减1后，当前state为0，则当前线程会释放该锁，否则仅仅是减1。
+如果当前线程没有持有该锁，而调用了该方法，则会抛出IllegalMonitorStateException异常。
+
+```java
+public void unlock() {
+     // 调用AQS的release
+     sync.release(1);
+ }
+
+// AQS的release
+public final boolean release(int arg) {
+    if (tryRelease(arg)) {
+        Node h = head;
+        if (h != null && h.waitStatus != 0)
+            unparkSuccessor(h);
+        return true;
+    }
+    return false;
+}
+
+// Sync重写的tryRelease  releases为1
+protected final boolean tryRelease(int releases) {
+   int c = getState() - releases;
+   // 如果不是锁持有者调用unlock，则抛出异常
+   if (Thread.currentThread() != getExclusiveOwnerThread())
+       throw new IllegalMonitorStateException();
+   boolean free = false;
+   // 如果当前可重入次数为0，则清空锁持有线程
+   if (c == 0) {
+       free = true;
+       setExclusiveOwnerThread(null);
+   }
+   // 设置可重入次数为原始值-1
+   setState(c);
+   return free;
 }
 ```
 

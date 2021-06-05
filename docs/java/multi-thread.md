@@ -6,6 +6,8 @@
   - [如何预防线程死锁](#如何预防线程死锁)
   - [线程的创建方式](#线程的创建方式)
   - [Java线程具有六种状态](#Java线程具有六种状态)
+  - [Object类中的wait方法](#Object类中的wait方法)
+  - [Object类中的notify方法](#Object类中的notify方法)
   - [Java中sleep和wait的区别](#Java中sleep和wait的区别)
   - [Java中的synchronized原理](#synchronized实现原理)  
   - [Java中的volatile原理](#Java中的volatile原理)
@@ -154,6 +156,36 @@ Linux 相比与其他操作系统（包括其他类 Unix 系统）有很多的�
 **6. 结束（Terminated）**  
 
 已终止线程的线程状态，线程已结束执行。
+
+### Object类中的wait方法
+
+当一个线程调用一个共享变量的wait方法时，调动线程会被阻塞挂起，直到发生了下面几件事情之一才返回：
+
+1.其他线程调用了该共享对象的 notify() 或者 notify() 方法；
+
+2.其他线程调用了该线程的 interrupt() 方法，该线程抛出 InterruptedException 异常返回。
+
+注意：如果调用 wait() 方法的线程没有事先获取该对象的监视器锁（synchronized），则调用wait() 方法时，调用线程会抛出 IllegalMonitorException 异常。
+
+**wait(long timeout)方法**
+
+如果一个线程调用共享对象的该方法挂起后，没有在指定的 timeout ms 时间内内被其他线程调用该共享变量的 notify() 或者 notifyAll() 方法唤醒，那么该函数还是会因为超时而返回。
+
+如果将 timeout 设置为 0 则和 无参的wait 方法效果一样，因为在 wait 方法内部就是调用了 wait(0)。需要注意的是，如果在调用该函数时，传递了一个负的 timeout 则会抛出 IllegalArgumentWException 异常。
+
+### Object类中的notify方法
+
+**notify()**
+
+一个线程调用共享对象的 notify() 方法后，会唤醒一个在该共享变量上调用 wait 系列方法后被挂起的线程。一个共享变量上可能会有多个线程在等待，具体唤醒哪个等待的线程是随机的。
+
+被唤醒的线程不能退马上从 wait 方法返回并继续执行，它必须在获取了共享对象的监视器锁后才可以返回，也就是唤醒它的线程释放了共享变量上的监视器锁后，被唤醒的线程也不一定会获取到共享对象的监视器锁，这是因为该线程还需要和其他线程一起竞争该锁，只有该线程竞争到了共享变量的监视器锁后才可以继续执行。
+
+类似 wait 系列方法，只有当线程获取到了共享变量的监视器锁后，才可以调用共享变量的 notify() 方法，否则会抛出 IllegalMonitorStateException 异常
+
+**notifyAll()**
+
+不同于在共享变量上调用 notify() 函数会唤醒被阻塞到该共享变量上的一个线程，notifyAll() 方法则会唤醒所有在该共享变量上由于 wait 系列方法而被挂起的线程。
 
 ### Java中sleep和wait的区别
 

@@ -569,6 +569,108 @@ public final boolean hasQueuedPredecessors() {
 
 与lock()方法类似，不同之处在于，它对中断进行响应，就是当前线程在调用该方法时，如果其他方法调用了当前线程的interrupt()方法时，则当前线程会抛出InterruptedException异常，然后返回。
 
+```java
+public void lockInterruptibly() throws InterruptedException {
+     sync.acquireInterruptibly(1);
+ }
+
+public final void acquireInterruptibly(int arg)
+       throws InterruptedException {
+   // 如果当前线程被中断，直接抛出异常
+   if (Thread.interrupted())
+       throw new InterruptedException();
+   if (!tryAcquire(arg))
+       // 调用AQS中可以被中断的方法
+       doAcquireInterruptibly(arg);
+}
+```
+
+**3. boolean tryLock()方法**
+
+尝试获取锁，如果当前该锁没有被其他线程持有，则当前线程获取该锁并返回true，否则返回false。该方法不会引用当前线程阻塞。
+
+```java
+public boolean tryLock() {
+    return sync.nonfairTryAcquire(1);
+}
+
+final boolean nonfairTryAcquire(int acquires) {
+    final Thread current = Thread.currentThread();
+    int c = getState();
+    if (c == 0) {
+        if (compareAndSetState(0, acquires)) {
+            setExclusiveOwnerThread(current);
+            return true;
+        }
+    }
+    else if (current == getExclusiveOwnerThread()) {
+        int nextc = c + acquires;
+        if (nextc < 0) // overflow
+            throw new Error("Maximum lock count exceeded");
+        setState(nextc);
+        return true;
+    }
+    return false;
+}
+```
+
+如上代码，可以看出，调用了sync的nonfairTryAcquire，所以tryLock()采用的是非公平策略。
+
+**4. boolean tryLock(long timeout,TimeUnit unit)方法**
+
+```java
+尝试获取锁，与tryLock()的不同之处在于，它设置了超时时间，如果超时时间到了没有获取到锁，就返回false。
+
+public boolean tryLock(long timeout, TimeUnit unit)
+        throws InterruptedException {
+    // 调用AQS的tryAcquireNanos
+    return sync.tryAcquireNanos(1, unit.toNanos(timeout));
+}
+
+public final boolean tryAcquireNanos(int arg, long nanosTimeout)
+        throws InterruptedException {
+    if (Thread.interrupted())
+        throw new InterruptedException();
+    return tryAcquire(arg) ||
+        doAcquireNanos(arg, nanosTimeout);
+}
+
+// AQS的doAcquireNanos方法
+private boolean doAcquireNanos(int arg, long nanosTimeout)
+        throws InterruptedException {
+    if (nanosTimeout <= 0L)
+        return false;
+    // 获取超时的绝对时间
+    final long deadline = System.nanoTime() + nanosTimeout;
+    final Node node = addWaiter(Node.EXCLUSIVE);
+    boolean failed = true;
+    try {
+        for (;;) {
+            final Node p = node.predecessor();
+            if (p == head && tryAcquire(arg)) {
+                setHead(node);
+                p.next = null; // help GC
+                failed = false;
+                return true;
+            }
+            // 计算剩余时间
+            nanosTimeout = deadline - System.nanoTime();
+            if (nanosTimeout <= 0L)
+                return false;
+            // spinForTimeoutThreshold是静态常量，1000
+            if (shouldParkAfterFailedAcquire(p, node) &&
+                nanosTimeout > spinForTimeoutThreshold)
+                // 挂起nanosTimeout后返回
+                LockSupport.parkNanos(this, nanosTimeout);
+            if (Thread.interrupted())
+                throw new InterruptedException();
+        }
+    } finally {
+        if (failed)
+            cancelAcquire(node);
+    }
+}
+```
 
 ### synchronized和ReentrantLock的区别
 

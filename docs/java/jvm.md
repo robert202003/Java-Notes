@@ -43,7 +43,7 @@
      
 ## Java内存区域
 
-![](./images/jvm001.jpg)
+![](images/0002.jpg)
 
 ### 程序计数器
 

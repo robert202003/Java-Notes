@@ -1,17 +1,15 @@
 <br>
 
-<div align="center">
-    ![](images/index.jpg)
-</div>
+![](images/index.jpg)
 
 <br>
 
-| 数据结构 | &nbsp;&nbsp;Java&nbsp;&nbsp; | &nbsp;数据库&nbsp; | 常用框架 | &nbsp;微服务开发&nbsp;|&nbsp;消息队列&nbsp;|  &nbsp;编程实战&nbsp; | 
-| :------: | :------: | :------: | :------: | :------: | :------: | :------: |
-| [:black_nib:](#black_nib-数据结构)| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:hotsprings:](#hotsprings-常用框架) |[:cloud:](#cloud-微服务开发) | [:rabbit:](#rabbit-消息队列) | [:bear:](#bear-编程实战) |
+| 数据结构 | &nbsp;Java&nbsp; |数据库 | Redis |Spring框架 | 微服务| 消息队列 |编程实战 | 
+| :------: | :------: | :------: | :------: | :------: | :------: | :------: |:------: |
+| [:pencil:](#pencil-数据结构)| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) |[:pushpin:](#pushpin-Redis) | [:hotsprings:](#hotsprings-Spring框架) |[:cloud:](#cloud-微服务) | [:rabbit:](#rabbit-消息队列) | [:bear:](#bear-编程实战) |
 <br>
 
-## :black_nib: 数据结构
+## :pencil: 数据结构
 
 - [数据结构](https://github.com/robert202003/Java-Notes/blob/master/docs/datastructure-algorithm/datastructure.md)
 
@@ -27,13 +25,19 @@
 - [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/redis.md)
 - [MySQL](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/database.md)
 
-## :hotsprings: 常用框架
+
+## :floppy_disk: Redis
+
+- [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/redis.md)
+- [MySQL](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/database.md)
+
+## :hotsprings: Spring框架
 
 - [Spring](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/spring.md)
 - [SpringBoot](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/springboot.md)
 - [Mybatis](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/mybatis.md)
 
-## :cloud: 微服务开发
+## :cloud: 微服务
 
 - [Zookeeper](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/zookeeper.md)
 - [Nacos](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/nacos.md)

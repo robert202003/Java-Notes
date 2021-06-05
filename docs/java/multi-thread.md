@@ -266,7 +266,7 @@ Synchronized方法同步不再是通过插入monitorentry和monitorexit指令实
 
 ## Java中的volatile原理
 
-![](images/0002.jpg)
+![](images/0001.jpg)
 
 如果对声明了volatile的变量进行写操作，JVM就会向处理器发送一条Lock前缀的指令，将这个变量所在缓存行的数据写回到系统内存；
 

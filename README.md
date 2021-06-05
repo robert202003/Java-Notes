@@ -1,3 +1,7 @@
+<div align="center">
+    <a href="https://github.com/robert202003/Java-Notes"> <img src="https://badgen.net/github/stars/robert202003/Java-Notes?icon=github&color=4ab8a1"></a>
+    <a href="https://github.com/robert202003/Java-Notes"> <img src="https://badgen.net/github/forks/robert202003/Java-Notes?icon=github&color=4ab8a1"></a>
+</div>
 <br>
 
 ![](images/index.jpg)
@@ -17,19 +21,16 @@
 
 - [Java 基础](https://github.com/robert202003/Java-Notes/blob/master/docs/java/basic.md)
 - [Java 容器](https://github.com/robert202003/Java-Notes/blob/master/docs/java/collections.md)
-- [Java 多线程](https://github.com/robert202003/Java-Notes/blob/master/docs/java/multi-thread.md)
+- [Java 并发](https://github.com/robert202003/Java-Notes/blob/master/docs/java/multi-thread.md)
 - [Java 虚拟机](https://github.com/robert202003/Java-Notes/blob/master/docs/java/jvm.md)
 
 ## :floppy_disk: 数据库
 
-- [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/redis.md)
 - [MySQL](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/database.md)
 
-
-## :floppy_disk: Redis
+## :pushpin: Redis
 
 - [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/redis.md)
-- [MySQL](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/database.md)
 
 ## :hotsprings: Spring框架
 

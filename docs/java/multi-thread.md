@@ -428,14 +428,15 @@ ReentrantLock是使用AQS来实现的，并且根据参数来决定内部是一�
 ReentrantLock里面的Sync类直接继承AQS，它的子类NonfairSync和FairSync分别实现了获取锁的非公平和公平策略。
 
 在这里，AQS的state状态值表示线程获取该锁的可重入次数，在默认情况下，state的值为0表示当前锁没有被任何线程持有。当一个线程第一次获取该锁时会尝试使用CAS设置state的值为1，如果CAS成功则当前线程
-获取了该锁，然后记录改锁的持有者为当前线程。在该线程没有释放锁的情况下第二次获取该锁后，状态值被设置为2，这就是可重入次数。在该线程释放该锁时，会尝试使用CAS让状态值减1，如果减1后状态值为0，则当前线程释放该锁。
+获取了该锁，然后记录改锁的持有者为当前线程。在该线程没有释放锁的情况下第二次获取该锁后，状态值被设置为2，这就是可重入次数。在该线程释放该锁时，会尝试使用CAS让状态值减1，如果减1后状态值为0，则当
+前线程释放该锁。
 
 **1. 获取锁**
 
 void lock()
 
 当一个线程调用该方法时，说明该线程希望获取该锁。如果该锁当前没有被其他线程占用，并且当前线程之前没有获取过该锁，则当前线程会获取到该锁，然后设置当前锁的拥有者为当前线程，并设置AQS的状态值为1，
-然后直接返回。如果当前线程之前已经获取过该锁，则这次只是简单地把AQS的状态值加1后返回。如果该锁已经被其他线程持有，则调用该方法的线程会被放入AQS阻塞队列。
+然后直接返回。如果当前线程之前已经获取过该锁，则这次只是简单地把AQS的状态值加1后返回。如果该锁已经被其他线程持有，则调用该方法的线程会被放入AQS阻塞队列后挂起。
 
 ```java
 public void lock() {
@@ -458,6 +459,116 @@ public void lock() {
          acquire(1);
  }
 ```
+
+如上代码，默认ASQ的状态值为0，所以第一个调用Lock的线程会通过CAS设置状态值为1，CAS成功则表示当前线程获取到了锁，然后setExclusiveOwnerThread设置该锁持有者是当前线程。
+
+如果这时候有其他线程调用lock方法企图获取该锁，CAS会失败，然后会调用AQS的acquire方法。
+
+```java
+public final void acquire(int arg) {
+    // 调用Sync重写的tryAcquire
+    if (!tryAcquire(arg) &&
+        // tryAcquirea放回false会把当前线程fangruAQS阻塞队列
+        acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
+        selfInterrupt();
+}
+```
+
+AQS并没有提供可用的tryAcquire方法，tryAcquire方法需要子类自己实现，下面是tryAcquire
+
+```java
+ protected final boolean tryAcquire(int acquires) {
+     return nonfairTryAcquire(acquires);
+ }
+
+ // 注意acquires的值为1
+ final boolean nonfairTryAcquire(int acquires) {
+     // 获取当前线程
+     final Thread current = Thread.currentThread();
+     // 获取此时state的值
+     int c = getState();
+     // 如果state的值为1
+     if (c == 0) {
+     	 // CAS设置state的值，从0变为1
+         if (compareAndSetState(0, acquires)) {
+             // 设置该锁的持有者是当前线程
+             setExclusiveOwnerThread(current);
+             return true;
+         }
+     }
+     // 如果该锁的持有者是当前线程
+     else if (current == getExclusiveOwnerThread()) {
+         // 简单的将state加1
+         int nextc = c + acquires;
+         // 注意精度溢出
+         if (nextc < 0) // overflow
+             throw new Error("Maximum lock count exceeded");
+         setState(nextc);
+         return true;
+     }
+     // 如果state不为0
+     // 如果当前线程不是锁持有者
+     // 满足以上两种情况，就返回false
+     return false;
+ }
+```
+ 
+ 简单的流程串一下，首先获取当前线程，查看当前锁的状态是否为0，为0则说明当前该锁空闲，那么就尝试CAS获取该锁，将AQS的state从0设置为1，并设置当前锁的持有者为当前线程，然后返回true。
+ 如果当前state不为0，则说明该锁已经被某个线程所持有，素有查看当前线程是否是该锁的持有者，如果当前线程是该锁的持有者，则state加1，然后返回true。需要注意的一点，nextc<0说明可重入次数溢出了。
+ 如果当前线程不是锁的持有者则返回false，然后会被加入AQS阻塞队列。
+ 
+ 公平锁：
+ 
+ ```java
+ // 同样，acquires的值为1
+  protected final boolean tryAcquire(int acquires) {
+      // 获取当前线程
+      final Thread current = Thread.currentThread();
+      // 获取当前的state
+      int c = getState();
+      // 如果当前state为0
+      if (c == 0) {
+          // 公平性策略
+          if (!hasQueuedPredecessors() &&
+              compareAndSetState(0, acquires)) {
+              setExclusiveOwnerThread(current);
+              return true;
+          }
+      }
+      // 当前线程是锁的持有者
+      else if (current == getExclusiveOwnerThread()) {
+          int nextc = c + acquires;
+          if (nextc < 0)
+              throw new Error("Maximum lock count exceeded");
+          setState(nextc);
+          return true;
+      }
+      return false;
+  }
+  
+```
+如上代码，公平的tryAcquire策略与非公平的类似，不同之处在设置CAS前添加了hasQueuedPredecessors方法，该方法是实现公平性的核心代码，代码如下：
+
+```java
+public final boolean hasQueuedPredecessors() {
+    Node t = tail; // Read fields in reverse initialization order
+    Node h = head;
+    Node s;
+    return h != t &&
+        ((s = h.next) == null || s.thread != Thread.currentThread());
+}
+```
+
+在如上代码中：
+
+- 如果h==t，说明当前队列为空，返回fasle
+- 如果h!=t并且s==null，说明有一个元素要作为AQS的第一个结点入队列（之前也了解过，第一个结点入队列的时候，会创建一个哨兵结点，然后将第一个结点插到哨兵结点的后面），返回true
+- 如果h!=t并且s！=null，此时 s.thread != Thread.currentThread()，则说明队列里面的第一个元素不是当前线程，那么返回true
+
+**2. void lockInterruptibly()方法**
+
+与lock()方法类似，不同之处在于，它对中断进行响应，就是当前线程在调用该方法时，如果其他方法调用了当前线程的interrupt()方法时，则当前线程会抛出InterruptedException异常，然后返回。
+
 
 ### synchronized和ReentrantLock的区别
 

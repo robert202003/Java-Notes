@@ -432,6 +432,33 @@ ReentrantLock里面的Sync类直接继承AQS，它的子类NonfairSync和FairSyn
 
 **1. 获取锁**
 
+void lock()
+
+当一个线程调用该方法时，说明该线程希望获取该锁。如果该锁当前没有被其他线程占用，并且当前线程之前没有获取过该锁，则当前线程会获取到该锁，然后设置当前锁的拥有者为当前线程，并设置AQS的状态值为1，
+然后直接返回。如果当前线程之前已经获取过该锁，则这次只是简单地把AQS的状态值加1后返回。如果该锁已经被其他线程持有，则调用该方法的线程会被放入AQS阻塞队列。
+
+```java
+public void lock() {
+    sync.lock();
+}
+```
+
+在如上代码中，ReentrantLock的lock()委托给了Sync类，根据创建ReentrantLock构造函数选择Sync的实现是NonfairSync还是FairSync，这个锁是一个非公平锁或者公平锁。
+
+下面代码是NonfairSync的lock()，也就是非公平锁
+
+```java
+ final void lock() {
+     // CAS设置状态值，从0变为1
+     if (compareAndSetState(0, 1))
+     	 // 如果设置成功，则设置该锁的持有者是当前线程
+         setExclusiveOwnerThread(Thread.currentThread());
+     else
+         // 否则调用AQS的acquire方法
+         acquire(1);
+ }
+```
+
 ### synchronized和ReentrantLock的区别
 
 - synchronized 是依赖于 JVM 实现的，ReentrantLock 是 JDK 的 API 层面；

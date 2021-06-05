@@ -33,7 +33,6 @@
   - [ReentrantReadWriteLock的原理](#ReentrantReadWriteLock原理)
   - [StampedLock锁](#StampedLock锁)
   - [ThreadLocal实现原理和内存泄露](#ThreadLocal实现原理和内存泄露)
-  - [ConcurrentHashMap分析](#ConcurrentHashMap分析)
 - [ThreadPoolExecutor线程池](#ThreadPoolExecutor线程池)  
   - [Executors工具类](#Executors工具类)
   - [线程池状态含义](#线程池状态含义)
@@ -729,8 +728,6 @@ protected final boolean tryRelease(int releases) {
 ### StampedLock锁
 
 ### ThreadLocal实现原理和内存泄露
-
-### ConcurrentHashMap分析
 
 ## ThreadPoolExecutor线程池
 

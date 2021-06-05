@@ -332,12 +332,12 @@ volatile是通过编译器在生成字节码时，在指令序列中添加“内
 
 ### synchronized和ReentrantLock的区别
 
-synchronized是和if、else、for、while一样的关键字，ReentrantLock是类，这是二者的本质区别。既然ReentrantLock是类，那么它就提供了比synchronized更多更灵活的特性，可以被继承、可以有方法、可以有各种各样的类变量，ReentrantLock比synchronized的扩展性体现在几点上： 
+- synchronized 是依赖于 JVM 实现的，ReentrantLock 是 JDK 的 API 层面；
+- ReentrantLock可以指定是公平锁还是非公平锁。而synchronized只能是非公平锁；
+- synchronized 不需要用户去手动释放锁，synchronized 代码执行完后系统会自动让线程释放对锁的占用； ReentrantLock则需要用户去手动释放锁，如果没有手动释放锁，就可能导致死锁现象；
+- ReentrantLock提供了一种能够中断等待锁的线程的机制，通过 lock.lockInterruptibly() 来实现这个机制，synchronized不可中断；
+- 一个ReentrantLock可以绑定多个Condition对象，仅需多次调用new Condition()即可；而在synchronized中锁锁对象的wait()、notify()/notifyAll()可以实现一个隐含的条件，如果要和多余的条件关联，就不得不额外的增加一个锁
 
-- ReentrantLock可以对获取锁的等待时间进行设置，这样就避免了死锁 
-- ReentrantLock可以获取各种锁的信息 
-- ReentrantLock可以灵活地实现多路通知 
-- 另外，二者的锁机制其实也是不一样的:ReentrantLock底层调用的是Unsafe的park方法加锁，synchronized操作的应该是对象头中mark word.
 
 ### Java中的CAS操作
 

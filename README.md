@@ -1,14 +1,13 @@
 # 吊打面试官
 
-| 数据结构与算法 | &nbsp;&nbsp;Java&nbsp;&nbsp; | &nbsp;数据库&nbsp; | 常用框架 | &nbsp;微服务开发&nbsp;|&nbsp;消息队列&nbsp;|  &nbsp;编程实战&nbsp; | 
+| 数据结构 | &nbsp;&nbsp;Java&nbsp;&nbsp; | &nbsp;数据库&nbsp; | 常用框架 | &nbsp;微服务开发&nbsp;|&nbsp;消息队列&nbsp;|  &nbsp;编程实战&nbsp; | 
 | :------: | :------: | :------: | :------: | :------: | :------: | :------: |
-| [:books:](#books-数据结构与算法)| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:hotsprings:](#hotsprings-常用框架) |[:cloud:](#cloud-微服务开发) | [:rabbit:](#rabbit-消息队列) | [:bear:](#bear-编程实战) |
+| [:black_nib:](#books-数据结构)| [:coffee:](#coffee-java) | [:floppy_disk:](#floppy_disk-数据库) | [:hotsprings:](#hotsprings-常用框架) |[:cloud:](#cloud-微服务开发) | [:rabbit:](#rabbit-消息队列) | [:bear:](#bear-编程实战) |
 <br>
 
-## :books: 数据结构与算法
+## :black_nib: 数据结构
 
 - [数据结构](https://github.com/robert202003/Java-Notes/blob/master/docs/datastructure-algorithm/datastructure.md)
-- [算法](https://github.com/robert202003/Java-Notes/blob/master/docs/datastructure-algorithm/algorithm.md)
 
 ## :coffee: Java
 

@@ -24,25 +24,26 @@
 
 ## :bicyclist: 数据库
 
-- [MySQL基础](https://github.com/robert202003/Java-Notes/blob/master/docs/dababase/mysql.md)
-- [MySQL索引](https://github.com/robert202003/Java-Notes/blob/master/docs/dababase/mysql-index.md)
-- [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/dababase/redis.md)
+- [MySQL基础](https://github.com/robert202003/Java-Notes/blob/master/docs/database/MYSQL.md)
+- [MySQL索引](https://github.com/robert202003/Java-Notes/blob/master/docs/database/MySQL-Index.md)
+- [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/database/Redis.md)
 
 ## :rabbit: 消息队列
 
-- [RabbitMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/rabbit.md)
-- [RocketMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/rocketmq.md)
+- [RabbitMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RabbitMQ.md)
+- [RocketMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RocketMQ.md)
 
 ## :cloud: 系统设计
+
 - [分布式理论](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/distributed.md)
 - [Zookeeper](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/zookeeper.md)
 - [Eureka](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/eureka.md)
 
 ## :hotsprings: 常用框架
 
-- [Spring](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/spring.md)
-- [SpringBoot](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/springboot.md)
-- [Mybatis](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/mybatis.md)
+- [Spring](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/Spring.md)
+- [SpringBoot](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/SpringBoot.md)
+- [Mybatis](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/MyBatis.md)
 
 ### License
 

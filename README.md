@@ -24,8 +24,8 @@
 
 ## :bicyclist: 数据库
 
-- [MySQL](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/database.md)
-
+- [MySQL](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/mysql.md)
+- [MySQL索引](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/mysql-index.md)
 - [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/redis.md)
 
 ## :rabbit: 消息队列

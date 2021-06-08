@@ -1,5 +1,3 @@
-# 数据库面试题
-
 - [MySQL中有哪几种锁](#MySQL中有哪几种锁)
 - [MyISAM 和 InnoDB 的区别](#MyISAM和InnoDB的区别)
 - [数据库的ACID特性](#数据库的ACID特性)

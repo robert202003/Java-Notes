@@ -24,14 +24,14 @@
 
 ## :bicyclist: 数据库
 
-- [MySQL](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/mysql.md)
-- [MySQL索引](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/mysql-index.md)
-- [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/batabase/redis.md)
+- [MySQL基础](https://github.com/robert202003/Java-Notes/blob/master/docs/dababase/mysql.md)
+- [MySQL索引](https://github.com/robert202003/Java-Notes/blob/master/docs/dababase/mysql-index.md)
+- [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/dababase/redis.md)
 
 ## :rabbit: 消息队列
 
-- [RabbitMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/rabbit.md)
-- [RocketMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/rocketmq.md)
+- [RabbitMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/rabbit.md)
+- [RocketMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/rocketmq.md)
 
 ## :cloud: 系统设计
 - [分布式理论](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/distributed.md)

@@ -117,9 +117,78 @@ Linux 相比与其他操作系统（包括其他类 Unix 系统）有很多的�
 靠按序申请资源来预防。按某一顺序申请资源，释放资源则反序释放。破坏循环等待条件。
 
 ### 线程的创建方式
+
 - 继承Thread类
 - 实现runnable接口
 - 实现callable接口，有返回值
+
+实现 Runnable 和 Callable 接口的类只能当做一个可以在线程中运行的任务，不是真正意义上的线程，因此最后还需要通过 Thread 来调用。可以理解为任务是通过线程驱动从而执行的。
+
+### 实现 Runnable 接口
+
+需要实现接口中的 run() 方法。
+
+```java
+public class MyRunnable implements Runnable {
+    @Override
+    public void run() {
+        // ...
+    }
+}
+```
+
+使用 Runnable 实例再创建一个 Thread 实例，然后调用 Thread 实例的 start() 方法来启动线程。
+
+```java
+public static void main(String[] args) {
+    MyRunnable instance = new MyRunnable();
+    Thread thread = new Thread(instance);
+    thread.start();
+}
+```
+
+### 实现 Callable 接口
+
+与 Runnable 相比，Callable 可以有返回值，返回值通过 FutureTask 进行封装。
+
+```java
+public class MyCallable implements Callable<Integer> {
+    public Integer call() {
+        return 123;
+    }
+}
+```
+
+```java
+public static void main(String[] args) throws ExecutionException, InterruptedException {
+    MyCallable mc = new MyCallable();
+    FutureTask<Integer> ft = new FutureTask<>(mc);
+    Thread thread = new Thread(ft);
+    thread.start();
+    System.out.println(ft.get());
+}
+```
+
+### 继承 Thread 类
+
+同样也是需要实现 run() 方法，因为 Thread 类也实现了 Runable 接口。
+
+当调用 start() 方法启动一个线程时，虚拟机会将该线程放入就绪队列中等待被调度，当一个线程被调度时会执行该线程的 run() 方法。
+
+```java
+public class MyThread extends Thread {
+    public void run() {
+        // ...
+    }
+}
+```
+
+```java
+public static void main(String[] args) {
+    MyThread mt = new MyThread();
+    mt.start();
+}
+```
 
 ### Java线程具有六种状态
 
@@ -1015,6 +1084,26 @@ CountDownLatch是使用AQS实现的，使用AQS的状态变量来存放计数器
 
 **2. 使用**
 
+```java
+public class CountdownLatchExample {
+
+    public static void main(String[] args) throws InterruptedException {
+        final int totalThread = 10;
+        CountDownLatch countDownLatch = new CountDownLatch(totalThread);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        for (int i = 0; i < totalThread; i++) {
+            executorService.execute(() -> {
+                System.out.print("run..");
+                countDownLatch.countDown();
+            });
+        }
+        countDownLatch.await();
+        System.out.println("end");
+        executorService.shutdown();
+    }
+}
+```
+
 ### CyclicBarrier原理
 
 CyclicBarrier是回环屏障的意思,它可以让一组线程全部达到一个状态后再全部同时执行。这里之所以叫作回环是因为当所有等待线程执行完毕，并重置CyclicBarrier 的状态后它可以被重用。之所以叫作屏障是因为线程调用await 方法后就会被阻塞，这个阻塞点就称为屏障点，等所有线程都调用了await方法后，线程们就会冲破屏障，继续向下运行。
@@ -1028,6 +1117,36 @@ CyclicBarrier基于独占锁实现,本质底层还是基于AQS的。parties用�
 还有一个变量barrierCommand也通过构造函数传递，这是一个任务，这个任务的执行时机是当所有线程都到达屏障点后。使用lock首先保证了更新计数器count的原子性。另外使用lock 的条件变量trip支持线程间使用await和signal操作进行同步。
 
 最后，在变量generation内部有一个变量broken，其用来记录当前屏障是否被打破。注意,这里的broken并没有被声明为volatile的,因为是在锁内使用变量,所以不需要声明。
+
+**2. 使用**
+
+```java
+public class CyclicBarrierExample {
+
+    public static void main(String[] args) {
+        final int totalThread = 10;
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(totalThread);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        for (int i = 0; i < totalThread; i++) {
+            executorService.execute(() -> {
+                System.out.print("before..");
+                try {
+                    cyclicBarrier.await();
+                } catch (InterruptedException | BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
+                System.out.print("after..");
+            });
+        }
+        executorService.shutdown();
+    }
+}
+```
+
+```html
+before..before..before..before..before..before..before..before..before..before..after..after..after..after..after..after..after..after..after..after..
+```
+
 
 ### 信号量Semaphore原理
 
@@ -1149,6 +1268,39 @@ void release()
         }
 ```
 release()->sync.releaseShared(1)可知，release方法每次只对信号量增加1，tryReleaseShared方法是无限循环，使用CAS保证release方法对信号量递增1的原子性操作。tryReleaseShared方法增加信号量值成功后会调用AQS的方法来激活因为调用acquire方法而被阻塞的线程。
+
+**2. 使用**
+
+以下代码模拟了对某个服务的并发请求，每次只能有 3 个客户端同时访问，请求总数为 10。
+
+```java
+public class SemaphoreExample {
+
+    public static void main(String[] args) {
+        final int clientCount = 3;
+        final int totalRequestCount = 10;
+        Semaphore semaphore = new Semaphore(clientCount);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        for (int i = 0; i < totalRequestCount; i++) {
+            executorService.execute(()->{
+                try {
+                    semaphore.acquire();
+                    System.out.print(semaphore.availablePermits() + " ");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    semaphore.release();
+                }
+            });
+        }
+        executorService.shutdown();
+    }
+}
+```
+
+```html
+2 1 2 2 2 2 2 1 2 2
+```
 
 **总结：**
 

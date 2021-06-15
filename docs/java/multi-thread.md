@@ -42,9 +42,9 @@
   - [线程池类型](#线程池类型)
   - [线程池源码分析](#线程池源码分析)
 - [Java并发包中线程同步器](#Java并发包中线程同步器)  
-  - [CountDownLatch原理和使用](#CountDownLatch原理和使用)
-  - [CyclicBarrier原理和使用](#CyclicBarrier原理和使用)
-  - [Semaphore原理和使用](#Semaphore原理和使用)
+  - [CountDownLatch原理](#CountDownLatch原理)
+  - [CyclicBarrier原理](#CyclicBarrier原理)
+  - [Semaphore原理](#Semaphore原理)
 - [Java并发包中的阻塞队列](#阻塞队列)  
   - [ConcurrentLinkedQueue原理](#ConcurrentLinkedQueue原理)
   - [LinkedBlockingQueue原理](#LinkedBlockingQueue原理)
@@ -1213,7 +1213,7 @@ CyclicBarrier是回环屏障的意思,它可以让一组线程全部达到一个
 
 CyclicBarrier基于独占锁实现,本质底层还是基于AQS的。parties用来记录线程个数，这里表示多少线程调用await后，所有线程才会冲破屏障继续往下运行。而count一开始等于parties,每当有线程调用await方法就递减1,当count为0时就表示所有线程都到了屏障点。
 
-你可能会疑惑，为何维护parties和count两个变量，只使用count不就可以了?另外别忘了CyclieBarrier是可以被复用的，使用两个变量的原因是,parties始终用来记录总的线程个数，当count计数器值变为0后，会将parties的值赋给count,从而进行复用。
+你可能会疑惑，为何维护parties和count两个变量，只使用count不就可以了?另外别忘了CyclicBarrier是可以被复用的，使用两个变量的原因是,parties始终用来记录总的线程个数，当count计数器值变为0后，会将parties的值赋给count,从而进行复用。
 
 还有一个变量barrierCommand也通过构造函数传递，这是一个任务，这个任务的执行时机是当所有线程都到达屏障点后。使用lock首先保证了更新计数器count的原子性。另外使用lock 的条件变量trip支持线程间使用await和signal操作进行同步。
 

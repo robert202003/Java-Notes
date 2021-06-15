@@ -467,6 +467,247 @@ JDK中的AtomicStampedReference类给每个变量的状态值都配备了一个�
 
 ### AQS原理
 
+**什么是AQS？**
+
+AQS即AbstractQueuedSynchronizer,是一个用于构建锁和同步器的框架。它能降低构建锁和同步器的工作量，还可以避免处理多个位置上发生的竞争问题。在基于AQS构建的同步器中，只可能在一个时刻发生阻塞，从而降低上下文切换的开销，并提高吞吐量。
+
+AQS支持独占锁（exclusive）和共享锁(share)两种模式。
+
+- 独占锁：只能被一个线程获取到(ReentrantLock)
+- 共享锁：可以被多个线程同时获取(CountDownLatch,ReadWriteLock)
+
+无论是独占锁还是共享锁，本质上都是对AQS内部的一个变量state的获取。state是一个原子的int变量，用来表示锁状态、资源数等。
+
+![](images/7.jpg)
+
+**AQS内部的数据结构与原理**
+
+AQS内部实现了两个队列，一个同步队列，一个条件队列。
+
+![](images/8.jpg)
+
+同步队列的作用是：当线程获取资源失败之后，就进入同步队列的尾部保持自旋等待，不断判断自己是否是链表的头节点，如果是头节点，就不断参试获取资源，获取成功后则退出同步队列。
+条件队列是为Lock实现的一个基础同步器，并且一个线程可能会有多个条件队列，只有在使用了Condition才会存在条件队列。
+
+同步队列和条件队列都是由一个个Node组成的。AQS内部有一个静态内部类Node。
+
+```java
+    static final class Node {
+        static final Node EXCLUSIVE = null;
+
+        //当前节点由于超时或中断被取消
+        static final int CANCELLED =  1;
+     
+        //表示当前节点的前节点被阻塞
+        static final int SIGNAL    = -1;
+        
+        //当前节点在等待condition
+        static final int CONDITION = -2;
+      
+        //状态需要向后传播
+        static final int PROPAGATE = -3;
+        
+        volatile int waitStatus;
+        
+        volatile Node prev;
+        volatile Node next;
+        volatile Thread thread;
+
+        Node nextWaiter;
+
+        final boolean isShared() {
+            return nextWaiter == SHARED;
+        }
+
+        final Node predecessor() throws NullPointerException {
+            Node p = prev;
+            if (p == null)
+                throw new NullPointerException();
+            else
+                return p;
+        }
+
+        Node() {    // Used to establish initial head or SHARED marker
+        }
+
+        Node(Thread thread, Node mode) {     // Used by addWaiter
+            this.nextWaiter = mode;
+            this.thread = thread;
+        }
+
+        Node(Thread thread, int waitStatus) { // Used by Condition
+            this.waitStatus = waitStatus;
+            this.thread = thread;
+        }
+    }
+```
+**重要方法的源码解析**
+
+```java
+    //独占模式下获取资源
+    public final void acquire(int arg) {
+        if (!tryAcquire(arg) &&
+            acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
+            selfInterrupt();
+    }
+```
+
+acquire(int arg)首先调用tryAcquire(arg)尝试直接获取资源，如果获取成功，因为与运算的短路性质，就不再执行后面的判断，直接返回。tryAcquire(int arg)的具体实现由子类负责。如果没有直接获取到资源，就将当前线程加入等待队列的尾部，并标记为独占模式，使线程在等待队列中自旋等待获取资源，直到获取资源成功才返回。如果线程在等待的过程中被中断过，就返回true，否则返回false。
+如果acquireQueued(addWaiter(Node.EXCLUSIVE), arg)执行过程中被中断过，那么if语句的条件就全部成立，就会执行selfInterrupt();方法。因为在等待队列中自旋状态的线程是不会响应中断的，它会把中断记录下来，如果在自旋时发生过中断，就返回true。然后就会执行selfInterrupt()方法，而这个方法就是简单的中断当前线程Thread.currentThread().interrupt();其作用就是补上在自旋时没有响应的中断。
+
+可以看出在整个方法中，最重要的就是acquireQueued(addWaiter(Node.EXCLUSIVE), arg)。
+
+我们首先看Node addWaiter(Node mode)方法，顾名思义，这个方法的作用就是添加一个等待者，根据之前对AQS中数据结构的分析，可以知道，添加等待者就是将该节点加入等待队列.
+
+```java
+private Node addWaiter(Node mode) {
+        Node node = new Node(Thread.currentThread(), mode);
+        // Try the fast path of enq; backup to full enq on failure
+        Node pred = tail;
+        //尝试快速入队
+        if (pred != null) { //队列已经初始化
+            node.prev = pred;
+            if (compareAndSetTail(pred, node)) {
+                pred.next = node;
+                return node; //快速入队成功后，就直接返回了
+            }
+        }
+        //快速入队失败，也就是说队列都还每初始化，就使用enq
+        enq(node);
+        return node;
+    }
+    
+    //执行入队
+     private Node enq(final Node node) {
+        for (;;) {
+            Node t = tail;
+            if (t == null) { // Must initialize
+            //如果队列为空，用一个空节点充当队列头
+                if (compareAndSetHead(new Node()))
+                    tail = head;//尾部指针也指向队列头
+            } else {
+                //队列已经初始化，入队
+                node.prev = t;
+                if (compareAndSetTail(t, node)) {
+                    t.next = node;
+                    return t;//打断循环
+                }
+            }
+        }
+    }
+ final boolean acquireQueued(final Node node, int arg) {
+        boolean failed = true;
+        try {
+            boolean interrupted = false;
+            for (;;) {
+                final Node p = node.predecessor();//拿到node的上一个节点
+                //前置节点为head，说明可以尝试获取资源。排队成功后，尝试拿锁
+                if (p == head && tryAcquire(arg)) {
+                    setHead(node);//获取成功，更新head节点
+                    p.next = null; // help GC
+                    failed = false;
+                    return interrupted;
+                }
+                //尝试拿锁失败后，根据条件进行park
+                if (shouldParkAfterFailedAcquire(p, node) &&
+                    parkAndCheckInterrupt())
+                    interrupted = true;
+            }
+        } finally {
+            if (failed)
+                cancelAcquire(node);
+        }
+    }
+    //获取资源失败后，检测并更新等待状态
+    private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
+        int ws = pred.waitStatus;
+        if (ws == Node.SIGNAL)
+            /*
+             * This node has already set status asking a release
+             * to signal it, so it can safely park.
+             */
+            return true;
+        if (ws > 0) {
+            /*
+             * Predecessor was cancelled. Skip over predecessors and
+             * indicate retry.
+             */
+            do {
+            //如果前节点取消了，那就往前找到一个等待状态的接待你，并排在它的后面
+                node.prev = pred = pred.prev;
+            } while (pred.waitStatus > 0);
+            pred.next = node;
+        } else {
+            /*
+             * waitStatus must be 0 or PROPAGATE.  Indicate that we
+             * need a signal, but don't park yet.  Caller will need to
+             * retry to make sure it cannot acquire before parking.
+             */
+            compareAndSetWaitStatus(pred, ws, Node.SIGNAL);
+        }
+        return false;
+    }
+    //阻塞当前线程，返回中断状态
+    private final boolean parkAndCheckInterrupt() {
+        LockSupport.park(this);
+        return Thread.interrupted();
+    }
+```
+
+具体的boolean tryAcquire(int acquires)实现有所不同。
+
+公平锁的实现如下：
+
+```java
+protected final boolean tryAcquire(int acquires) {
+    final Thread current = Thread.currentThread();
+    int c = getState();
+    if (c == 0) {
+        if (!hasQueuedPredecessors() &&
+                compareAndSetState(0, acquires)) {
+            setExclusiveOwnerThread(current);
+            return true;
+        }
+    }
+    else if (current == getExclusiveOwnerThread()) {
+        int nextc = c + acquires;
+        if (nextc < 0)
+            throw new Error("Maximum lock count exceeded");
+        setState(nextc);
+        return true;
+    }
+    return false;
+}
+```
+
+非公平锁的实现如下：
+
+```java
+final boolean nonfairTryAcquire(int acquires) {
+    final Thread current = Thread.currentThread();
+    int c = getState();
+    if (c == 0) {
+        if (compareAndSetState(0, acquires)) {
+            setExclusiveOwnerThread(current);
+            return true;
+        }
+    }
+    else if (current == getExclusiveOwnerThread()) {
+        int nextc = c + acquires;
+        if (nextc < 0) // overflow
+            throw new Error("Maximum lock count exceeded");
+        setState(nextc);
+        return true;
+    }
+    return false;
+}
+```
+
+**park**
+
+在AQS的实现中有一个出现了一个park的概念。park即LockSupport.park().它的作用是阻塞当前线程，并且可以调用LockSupport.unpark(Thread)去停止阻塞。它们的实质都是通过UnSafe类使用了CPU的原语。
+在AQS中使用park的主要作用是，让排队的线程阻塞掉（停止其自旋，自旋会消耗CPU资源），并在需要的时候，可以方便的唤醒阻塞掉的线程。
+
 ### ReentrantLock实现原理
 
 ReentrantLock是基于AQS实现可重入的独占锁，同时只能有一个线程可以获取该锁，其他获取该锁的线程会被阻塞而放入该锁的AQS阻塞队列里面。

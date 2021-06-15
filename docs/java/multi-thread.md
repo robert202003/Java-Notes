@@ -30,9 +30,9 @@
      - [获取锁](#获取锁)
      - [释放锁](#释放锁)
   - [synchronized和ReentrantLock的区别](#synchronized和ReentrantLock的区别)
-  - [ReentrantReadWriteLock的原理](#ReentrantReadWriteLock原理)
-  - [StampedLock锁](#StampedLock锁)
-  - [ThreadLocal实现原理和内存泄露](#ThreadLocal实现原理和内存泄露)
+  - [ReentrantReadWriteLock原理](#ReentrantReadWriteLock原理)
+  - [StampedLock的原理](#StampedLock的原理)
+  - [ThreadLocal实现原理](#ThreadLocal实现原理)
 - [ThreadPoolExecutor线程池](#ThreadPoolExecutor线程池)  
   - [Executors工具类](#Executors工具类)
   - [线程池状态含义](#线程池状态含义)
@@ -794,9 +794,110 @@ protected final boolean tryRelease(int releases) {
 
 ### ReentrantReadWriteLock的原理
 
-### StampedLock锁
+ReadLock和WriteLock是ReentrantReadWriteLock的两个内部类，Lock的上锁和释放锁都是通过AQS来实现的。
 
-### ThreadLocal实现原理和内存泄露
+![](images/5.jpg)
+
+
+AQS定义了独占模式的acquire()和release()方法，共享模式的acquireShared()和releaseShared()方法.还定义了抽象方法tryAcquire()、tryAcquiredShared()、tryRelease()和tryReleaseShared()由子类实现，tryAcquire()和tryAcquiredShared()分别对应独占模式和共享模式下的锁的尝试获取，就是通过这两个方法来实现公平性和非公平性，在尝试获取中，如果新来的线程必须先入队才能获取锁就是公平的，否则就是非公平的。这里可以看出AQS定义整体的同步器框架，具体实现放手交由子类实现。
+
+ReadLock和WriteLock方法都是通过调用Sync的方法实现的，所以我们先来分析一下Sync源码：
+
+AQS 的状态state是32位（int 类型）的，辦成两份，读锁用高16位，表示持有读锁的线程数（sharedCount），写锁低16位，表示写锁的重入次数 （exclusiveCount）。状态值为 0 表示锁空闲，sharedCount不为 0 表示分配了读锁，exclusiveCount 不为 0 表示分配了写锁，sharedCount和exclusiveCount 一般不会同时不为 0，只有当线程占用了写锁，该线程可以重入获取读锁，反之不成立。
+
+![](images/6.jpg)
+
+### StampedLock的原理
+
+StampedLock是JUC并发包里面JDK1.8版本新增的一个锁，该锁提供了三种模式的读写控制，当调用获取锁的系列函数的时候，会返回一个long 型的变量，该变量被称为戳记（stamp),这个戳记代表了锁的状态。
+
+try系列获取锁的函数，当获取锁失败后会返回为0的stamp值。当调用释放锁和转换锁的方法时候需要传入获取锁时候返回的stamp值。
+
+StampedLock的内部实现是基于CLH锁的，CLH锁原理：锁维护着一个等待线程队列，所有申请锁且失败的线程都记录在队列。一个节点代表一个线程，保存着一个标记位locked,用以判断当前线程是否已经释放锁。当一个线程试图获取锁时，从队列尾节点作为前序节点，循环判断所有的前序节点是否已经成功释放锁。
+
+![](images/4.jpg)
+
+
+```java
+private static final long serialVersionUID = -6001602636862214147L;
+
+    /** 获取服务器CPU核数 */
+    private static final int NCPU = Runtime.getRuntime().availableProcessors();
+
+    /** 线程入队列前自旋次数 */
+    private static final int SPINS = (NCPU > 1) ? 1 << 6 : 0;
+
+    /** 队列头结点自旋获取锁最大失败次数后再次进入队列 */
+    private static final int HEAD_SPINS = (NCPU > 1) ? 1 << 10 : 0;
+
+    /** 重新阻塞前的最大重试次数 */
+    private static final int MAX_HEAD_SPINS = (NCPU > 1) ? 1 << 16 : 0;
+
+    /** The period for yielding when waiting for overflow spinlock */
+    private static final int OVERFLOW_YIELD_RATE = 7; // must be power 2 - 1
+
+    /** 溢出之前用于阅读器计数的位数 */
+    private static final int LG_READERS = 7;
+
+    // 锁定状态和stamp操作的值
+    private static final long RUNIT = 1L; // 每次获取读锁 进行+1
+    private static final long WBIT  = 1L << LG_READERS;  //写状态 1000 0000
+    private static final long RBITS = WBIT - 1L;  //溢出保护 0111 1111
+    private static final long RFULL = RBITS - 1L; //最大读线程数 0111 1110
+    private static final long ABITS = RBITS | WBIT;   // 掩码 前8位都为1  1111 1111
+    private static final long SBITS = ~RBITS; // 掩码 1... 1000 0000
+
+    //锁state初始值，第9位为1，避免算术时和0冲突
+    private static final long ORIGIN = WBIT << 1;
+
+    // 来自取消获取方法的特殊值，因此调用者可以抛出IE
+    private static final long INTERRUPTED = 1L;
+
+    // WNode节点的status值
+    private static final int WAITING   = -1;
+    private static final int CANCELLED =  1;
+
+    // WNode节点的读写模式
+    private static final int RMODE = 0;
+    private static final int WMODE = 1;
+
+    /** Wait nodes */
+    static final class WNode {
+        volatile WNode prev;
+        volatile WNode next;
+        volatile WNode cowait;    // 读模式使用该节点形成栈
+        volatile Thread thread;   // non-null while possibly parked
+        volatile int status;      // 0, WAITING, or CANCELLED
+        final int mode;           // RMODE or WMODE
+        WNode(int m, WNode p) { mode = m; prev = p; }
+    }
+
+    /** CLH队头节点 */
+    private transient volatile WNode whead;
+    /** CLH队尾节点 */
+    private transient volatile WNode wtail;
+
+    // views
+    transient ReadLockView readLockView;
+    transient WriteLockView writeLockView;
+    transient ReadWriteLockView readWriteLockView;
+
+    /** 锁队列状态， 当处于写模式时第8位为1，读模式时前7为为1-126（附加的readerOverflow用于当读者超过126时） */
+    private transient volatile long state;
+    /** 将state超过 RFULL=126的值放到readerOverflow字段中 */
+    private transient int readerOverflow;
+
+```
+
+
+### ThreadLocal实现原理
+
+ThreadLocal被称作线程局部变量，当我们定义了一个ThreadLocal变量，所有的线程共同使用这个变量，但是对于每一个线程来说，实际操作的值是互相独立的。
+
+**原理**
+
+每一个线程都有一个对应的Thread对象，而Thread类有一个成员变量，它是一个Map集合，这个Map集合的key就是ThreadLocal的引用，而value就是当前线程在key所对应的ThreadLocal中存储的值。
+当某个线程需要获取存储在ThreadLocal变量中的值时，ThreadLocal底层会获取当前线程的Thread对象中的Map集合，然后以ThreadLocal作为key，从Map集合中查找value值。这就是ThreadLocal实现线程独立的原理。
 
 ## ThreadPoolExecutor线程池
 
@@ -1314,7 +1415,11 @@ ConcurrentLinkedQueue是基于链接节点的无界线程安全队列
 
 ### LinkedBlockingQueue原理
 
-待补充......
+LinkedBlockingQueue内部由单链表实现，只能从head取元素，从tail添加元素。添加元素和获取元素都有独立的锁，也就是说LinkedBlockingQueue是读写分离的，读写操作可以并行执行。
+
+LinkedBlockingQueue采用可重入锁(ReentrantLock)来保证在并发情况下的线程安全。
+
+LinkedBlockingQueue一共有三个构造器，分别是无参构造器、可以指定容量的构造器、可以穿入一个容器的构造器。如果在创建实例的时候调用的是无参构造器，LinkedBlockingQueue的默认容量是Integer.MAX_VALUE，这样做很可能会导致队列还没有满，但是内存却已经满了的情况（内存溢出）。
 
 ### ArrayBlockingQueue原理
 
@@ -1326,9 +1431,7 @@ ArrayBlockingQueue是按 FIFO（先进先出）原则对元素进行排序，元
 
 ### PriorityBlockingQueue原理
 
-PriorityBlockingQueue是一个支持优先级的无界阻塞队列。
-
-默认情况下PriorityBlockingQueue队列元素采取自然顺序升序排列。也可以自定义类实现compareTo()方法来指定元素排序规则，或者在初始化时，可以指定构造参数Comparator来对元素进行排序。
+PriorityBlockingQueue是一个支持优先级的无界阻塞队列。默认情况下PriorityBlockingQueue队列元素采取自然顺序升序排列。也可以自定义类实现compareTo()方法来指定元素排序规则，或者在初始化时，可以指定构造参数Comparator来对元素进行排序。
 
 注意：PriorityBlockingQueue不能保证相同优先级元素的顺序(即两个值排序一样时，不保证顺序)。
 
@@ -1352,7 +1455,15 @@ DelayQueue是一个无界阻塞延迟队列，只有在延迟期满时才能从�
 
 ### SynchronousQueue
 
-待补充......
+SynchronousQueue是无界的，是一种无缓冲的等待队列，但是由于该Queue本身的特性，在某次添加元素后必须等待其他线程取走后才能继续添加；可以认为SynchronousQueue是一个缓存值为1的阻塞队列，但是 isEmpty()方法永远返回是true，remainingCapacity() 方法永远返回是0，remove()和removeAll() 方法永远返回是false，iterator()方法永远返回空，peek()方法永远返回null。
+
+声明一个SynchronousQueue有两种不同的方式，它们之间有着不太一样的行为。
+
+公平模式和非公平模式的区别:如果采用公平模式：SynchronousQueue会采用公平锁，并配合一个FIFO队列来阻塞多余的生产者和消费者，从而体系整体的公平策略；
+
+但如果是非公平模式（SynchronousQueue默认）：SynchronousQueue采用非公平锁，同时配合一个LIFO队列来管理多余的生产者和消费者，而后一种模式，如果生产者和消费者的处理速度有差距，则很容易出现饥渴的情况，即可能有某些生产者或者是消费者的数据永远都得不到处理。
+
+SynchronousQueue是这样 一种阻塞队列，其中每个 put 必须等待一个 take，反之亦然。同步队列没有任何内部容量，甚至连一个队列的容量都没有。
 
 ### LinkedTransferQueue
 

@@ -10,7 +10,7 @@
   - [fanout](#-fanout广播)
   - [direct](#-direct)
   - [topic](#-topic)
-  - [headers(不推荐)](#-headers不推荐)
+  - [headers](#-headers)
 
 <!-- /TOC -->
 

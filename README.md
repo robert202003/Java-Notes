@@ -33,25 +33,24 @@
 
 - [RabbitMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RabbitMQ.md)
 - [RocketMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RocketMQ.md)
-- [kafka](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RocketMQ.md)
+- [Kafka](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RocketMQ.md)
 
 ## :cloud: 系统设计
 
-- [CAP理论](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/CAP理论.md)
-- [分布式ID方案](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/分布式id方案.md)
+- [分布式](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/分布式.md)
+- [分布式ID方案](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/分布式ID.md)
 - [Zookeeper](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/Zookeeper.md)
 - [Eureka](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/Eureka.md)
 
 ## :hotsprings: 常用框架
 
 - [Spring](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/Spring.md)
-- [SpringBoot](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/SpringBoot.md)
 - [Mybatis](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/MyBatis.md)
+- [SpringBoot](https://github.com/robert202003/Java-Notes/blob/master/docs/framework/SpringBoot.md)
 
 ## :running_shirt_with_sash: 计算机网络
 
-- [计算机网络常见面试题](https://github.com/robert202003/Java-Notes/blob/master/docs/network/计算机网络.md)
-- [计算机网络基础知识总结](https://github.com/robert202003/Java-Notes/blob/master/docs/network/计算机网络知识总结.md)
+- [计算机网络](https://github.com/robert202003/Java-Notes/blob/master/docs/network/计算机网络.md)
 - [Socket](https://github.com/robert202003/Java-Notes/blob/master/docs/network/Socket.md)
 
 ### License

@@ -31,7 +31,7 @@
      - [释放锁](#释放锁)
   - [synchronized和ReentrantLock的区别](#synchronized和ReentrantLock的区别)
   - [ReentrantReadWriteLock原理](#ReentrantReadWriteLock原理)
-  - [StampedLock的原理](#StampedLock的原理)
+  - [StampedLock原理](#StampedLock原理)
   - [ThreadLocal实现原理](#ThreadLocal实现原理)
 - [ThreadPoolExecutor线程池](#ThreadPoolExecutor线程池)  
   - [Executors工具类](#Executors工具类)
@@ -45,7 +45,7 @@
   - [CountDownLatch原理](#CountDownLatch原理)
   - [CyclicBarrier原理](#CyclicBarrier原理)
   - [Semaphore原理](#Semaphore原理)
-- [Java并发包中的阻塞队列](#阻塞队列)  
+- [Java并发包中的阻塞队列](#Java并发包中的阻塞队列)  
   - [ConcurrentLinkedQueue原理](#ConcurrentLinkedQueue原理)
   - [LinkedBlockingQueue原理](#LinkedBlockingQueue原理)
   - [ArrayBlockingQueue原理](#ArrayBlockingQueue原理)
@@ -1033,7 +1033,7 @@ protected final boolean tryRelease(int releases) {
 - ReentrantLock提供了一种能够中断等待锁的线程的机制，通过 lock.lockInterruptibly() 来实现这个机制，synchronized不可中断；
 - 一个ReentrantLock可以绑定多个Condition对象，仅需多次调用new Condition()即可；而在synchronized中锁锁对象的wait()、notify()/notifyAll()可以实现一个隐含的条件，如果要和多余的条件关联，就不得不额外的增加一个锁
 
-### ReentrantReadWriteLock的原理
+### ReentrantReadWriteLock原理
 
 ReadLock和WriteLock是ReentrantReadWriteLock的两个内部类，Lock的上锁和释放锁都是通过AQS来实现的。
 
@@ -1048,7 +1048,7 @@ AQS 的状态state是32位（int 类型）的，辦成两份，读锁用高16位
 
 ![](images/6.jpg)
 
-### StampedLock的原理
+### StampedLock原理
 
 StampedLock是JUC并发包里面JDK1.8版本新增的一个锁，该锁提供了三种模式的读写控制，当调用获取锁的系列函数的时候，会返回一个long 型的变量，该变量被称为戳记（stamp),这个戳记代表了锁的状态。
 
@@ -1490,7 +1490,7 @@ before..before..before..before..before..before..before..before..before..before..
 ```
 
 
-### 信号量Semaphore原理
+### Semaphore原理
 
 Semaphore信号量也是Java中的一个同步器，与CountDownLatch和CycleBarrier不同的是它内部的计数器是递增的，并且一开始初始化Semaphore时可以指定一个初始值，但是并不需要知道需要同步的线程个数，而是在需要同步的地方调用acquire方法时指定需要同步的线程个数
 

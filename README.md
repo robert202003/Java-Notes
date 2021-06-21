@@ -32,6 +32,7 @@
 ## :rabbit: 消息队列
 
 - [RabbitMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RabbitMQ.md)
+- [RabbitMQ面试](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RabbitMQ面试.md)
 - [RocketMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RocketMQ.md)
 - [Kafka](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RocketMQ.md)
 

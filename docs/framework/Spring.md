@@ -2,6 +2,8 @@
 - [BeanFactory和ApplicationContext的区别](#BeanFactory和ApplicationContext的区别)
 - [Spring的bean作用范围](#Spring的bean作用范围)
 - [Spring AOP 和 AspectJ AOP 有什么区别](#SpringAOP和AspectJAOP有什么区别)
+- [SpringAOP原理](#SpringAOP原理)
+- [SpringAOP五大通知类型](#SpringAOP五大通知类型)
 - [Spring的生命周期](#Spring的生命周期)
 - [Spring MVC原理](#SpringMVC原理)
 - [Spring的事务传播机制](#Spring的事务传播机制)
@@ -84,6 +86,52 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 
 如果我们的切面比较少，那么两者性能差异不大。但是，当切面太多的话，最好选择 AspectJ ，它比Spring AOP 快很多。
 
+## SpringAOP原理
+
+SpringAOP的实现是基于代理模式 ,代理类型包括:静态代理、动态代理。
+
+## SpringAOP五大通知类型
+
+**1.前置通知**
+
+在目标方法执行之前执行执行的通知。
+
+前置通知方法，可以没有参数，也可以额外接收一个JoinPoint，Spring会自动将该对象传入，代表当前的连接点，通过该对象可以获取目标对象和目标方法相关的信息。
+
+**2.环绕通知**
+
+在目标方法执行之前和之后都可以执行额外代码的通知。
+
+在环绕通知中必须显式的调用目标方法，目标方法才会执行，这个显式调用时通过ProceedingJoinPoint来实现的，可以在环绕通知中接收一个此类型的形参，spring容器会自动将该对象传入，注意这个参数必须处在环绕通知的第一个形参位置。
+
+**要注意，只有环绕通知可以接收ProceedingJoinPoint，而其他通知只能接收JoinPoint。
+
+环绕通知需要返回返回值，否则真正调用者将拿不到返回值，只能得到一个null。
+
+**3.后置通知**
+
+在目标方法执行之后执行的通知。
+
+在后置通知中也可以选择性的接收一个JoinPoint来获取连接点的额外信息，但是这个参数必须处在参数列表的第一个。在后置通知中，还可以通过配置获取返回值，一定要保证JoinPoint处在参数列表的第一位，否则抛异常
+
+**4.异常通知**
+
+在目标方法抛出异常时执行的通知
+
+可以配置传入JoinPoint获取目标对象和目标方法相关信息，但必须处在参数列表第一位。另外，还可以配置参数，让异常通知可以接收到目标方法抛出的异常对象。
+
+**5.最终通知**
+
+是在目标方法执行之后执行的通知。
+
+和后置通知不同之处在于，后置通知是在方法正常返回后执行的通知，如果方法没有正常返-例如抛出异常，则后置通知不会执行。
+
+而最终通知无论如何都会在目标方法调用过后执行，即使目标方法没有正常的执行完成。
+
+另外，后置通知可以通过配置得到返回值，而最终通知无法得到。
+
+最终通知也可以额外接收一个JoinPoint参数，来获取目标对象和目标方法相关信息，但一定要保证必须是第一个参数。
+
 ## Spring bean的生命周期
 
 - Bean 容器找到配置文件中 Spring Bean 的定义，Bean 容器利用 Java Reflection API 创建一个Bean的实例。
@@ -158,7 +206,7 @@ Spring AOP 已经集成了 AspectJ ，AspectJ 应该算的上是 Java 生态系�
 
 也可以这样记忆：
 
-spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记忆  
+Spring事务的传播机制共7中,可以分为3组+1个特殊来分析或者记忆  
 
 **1).REQUIRE组**  
 
@@ -302,7 +350,7 @@ public static void main(String[] args) {
 
 2）@Transactional注解只能应用到public可见度的方法上。如果应用在protected、private或者package可见度的方法上，也不会报错，不过事务设置不会起作用。
 
-3）默认情况下，Spirng会对unchecked异常进行事务回滚；如果是checked异常则不回滚。
+3）默认情况下，Spring会对unchecked异常进行事务回滚；如果是checked异常则不回滚。
 
 4）只读事务： @Transactional(propagation=Propagation.NOT_SUPPORTED,readOnly=true) 只读标志只在事务启动时应用，否则即使配置也会被忽略。
 

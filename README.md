@@ -25,7 +25,7 @@
 
 ## :bicyclist: 数据库
 
-- [MySQL基础](https://github.com/robert202003/Java-Notes/blob/master/docs/database/MYSQL.md)
+- [MySQL基础](https://github.com/robert202003/Java-Notes/blob/master/docs/database/MySQL.md)
 - [MySQL索引](https://github.com/robert202003/Java-Notes/blob/master/docs/database/MySQL-Index.md)
 - [Redis](https://github.com/robert202003/Java-Notes/blob/master/docs/database/Redis.md)
 

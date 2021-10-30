@@ -32,13 +32,12 @@
 ## :rabbit: 消息队列
 
 - [RabbitMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RabbitMQ.md)
-- [RabbitMQ面试](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RabbitMQ面试.md)
 - [RocketMQ](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RocketMQ.md)
 - [Kafka](https://github.com/robert202003/Java-Notes/blob/master/docs/mq/RocketMQ.md)
 
 ## :cloud: 系统设计
 
-- [分布式](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/分布式.md)
+- [分布式理论](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/分布式理论.md)
 - [分布式ID方案](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/分布式ID.md)
 - [Zookeeper](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/Zookeeper.md)
 - [Eureka](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/Eureka.md)

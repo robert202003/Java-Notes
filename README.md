@@ -39,7 +39,7 @@
 ## :cloud: 系统设计
 
 - [分布式理论](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/分布式理论.md)
-- [分布式ID方案](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/分布式ID.md)
+- [分布式ID方案](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/分布式ID方案.md)
 - [Zookeeper](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/Zookeeper.md)
 - [Eureka](https://github.com/robert202003/Java-Notes/blob/master/docs/system-design/Eureka.md)
 

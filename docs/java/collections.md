@@ -1,4 +1,5 @@
 # Java 容器
+<!-- GFM-TOC -->
 * [Java 容器](#java-容器)
     * [一、概览](#一概览)
         * [Collection](#collection)
